@@ -14,7 +14,7 @@ public class StringTemplate4Instance implements TemplateInstance {
 
 	private StringTemplate4Instance() { }
 
-	public void put(String key, String value) {
+	public void put(String key, Object value) {
 		st.add(key, value);
 	}
 

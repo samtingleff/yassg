@@ -20,14 +20,25 @@ public class StringTemplate4EngineTestCase {
 
 	@Test
 	public void simple() throws IOException {
-		String t = loadResource("/simple.st");
-		Assert.assertEquals("Hello, <name>", t);
+		String t = "Hello, $name$";
 		TemplateInstance ti = te.parse(t);
 		Assert.assertNotNull(ti);
 		ti.put("name", "foo");
 		String result = ti.render();
 		Assert.assertNotNull(result);
 		Assert.assertEquals("Hello, foo", result);
+	}
+
+	@Test
+	public void object() throws IOException {
+		String t = "this is foobared to the $foo.foo$ level, $foo.bar$.";
+		TemplateInstance ti = te.parse(t);
+		Assert.assertNotNull(ti);
+		Foo foo = new Foo(10, "bro");
+		ti.put("foo", foo);
+		String result = ti.render();
+		Assert.assertNotNull(result);
+		Assert.assertEquals("this is foobared to the 10 level, bro.", result);
 	}
 
 	private String loadResource(String path) throws IOException {
@@ -41,5 +52,20 @@ public class StringTemplate4EngineTestCase {
 		isr.close();
 		is.close();
 		return s;
+	}
+
+	private static class Foo {
+		private int foo;
+		private String bar;
+		public Foo(int foo, String bar) {
+			this.foo = foo;
+			this.bar = bar;
+		}
+
+		public int getFoo() { return foo; }
+
+		public String getBar() { return bar; }
+
+		public String getFooBar() { return String.format("%1$s:%2$s", foo, bar); }
 	}
 }
