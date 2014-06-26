@@ -22,6 +22,6 @@ public class MarkdownTemplateEngineTestCase {
 		Assert.assertNotNull(ti);
 		String result = ti.render();
 		Assert.assertNotNull(result);
-		Assert.assertEquals("This is <b>bold</b> text", result);
+		Assert.assertEquals("<p>This is <strong>bold</strong> text</p>\n", result);
 	}
 }
