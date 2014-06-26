@@ -1,8 +1,10 @@
 # Goal #
-yassg --pages=inputs/ -static=static/ -output=output/
-rsync -av --delete output/ sam@some.web.host:~/public_html/
 
-# Components
+Build it: mvn clean assembly:single
+Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -input input/ -static static/  -output output/
+Push it:  rsync -av --delete output/ sam@some.web.host:~/public_html/
+
+# Components #
 
 PageDB: responsible for reading in page metadata and raw body contents.
 
@@ -15,8 +17,12 @@ ContentDB: understands "blogging" as a data model
 
 ContentWriter: writes Page objects to an output destination
 
-ContentDB: rsync from static/ to output/
+Rsync: rsync from static/ to output/static/
 
 TemplateEngine: responsible for converting from a source format (markdown) to a destination format (html).
 
+# Future Directions #
+
+- Build a search index
+- Suggestions of related content
 
