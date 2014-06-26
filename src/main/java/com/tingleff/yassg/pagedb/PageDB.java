@@ -9,5 +9,7 @@ public interface PageDB {
 
 	public Page read(String id) throws IOException, ParseException;
 
+	public void decorate(Decorator<Page> pageDecorator);
+
 	public Iterable<Page> iterator();
 }

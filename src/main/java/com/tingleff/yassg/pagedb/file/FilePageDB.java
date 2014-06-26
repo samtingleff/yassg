@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tingleff.yassg.model.Page;
+import com.tingleff.yassg.pagedb.Decorator;
 import com.tingleff.yassg.pagedb.PageDB;
 
 public class FilePageDB implements PageDB {
@@ -29,11 +30,21 @@ public class FilePageDB implements PageDB {
 
 	private FilePageDB() { }
 
+	@Override
 	public Page read(String id) throws IOException, ParseException {
 		File metaFile = new File(root, id + ".json");
 		return read(metaFile, id);
 	}
 
+	@Override
+	public void decorate(Decorator<Page> pageDecorator) {
+		Iterable<Page> iter = iterator();
+		for (Page p : iter) {
+			pageDecorator.decorate(p);
+		}
+	}
+
+	@Override
 	public Iterable<Page> iterator() {
 		Iterator<File> metaFilesIterator = FileUtils.iterateFiles(root, new String[] { "json" }, true);
 		return new LazyPageIterable(metaFilesIterator);

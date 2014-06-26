@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import com.tingleff.yassg.model.Page;
+import com.tingleff.yassg.pagedb.Decorator;
 import com.tingleff.yassg.pagedb.PageDB;
 
 @RunWith(JUnit4.class)
@@ -30,6 +31,23 @@ public class FilePageDBTestCase {
 		Assert.assertEquals(new DateTime(2014, 6, 17, 11, 13), page.getPubDate());
 		Assert.assertEquals(new HashSet<String>(Arrays.asList("tag1", "tag2", "tag3")), page.getTags());
 		Assert.assertEquals("<p>This is a paragraph.</p>", page.getBody());
+	}
+
+	@Test
+	public void decorator() throws Exception {
+		class Foo implements Decorator<Page> {
+			int counter = 0;
+			@Override
+			public void decorate(Page t) {
+				++counter;
+			}
+			public int getCounter() {
+				return counter;
+			}
+		};
+		Foo foo = new Foo();
+		db.decorate(foo);
+		Assert.assertEquals(foo.getCounter(), 2);
 	}
 
 	@Test
