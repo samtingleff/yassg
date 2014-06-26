@@ -46,7 +46,10 @@ public class FilePageDB implements PageDB {
 
 	@Override
 	public Iterable<Page> iterator() {
-		Iterator<File> metaFilesIterator = FileUtils.iterateFiles(root, new String[] { "json" }, true);
+		Iterator<File> metaFilesIterator = FileUtils.iterateFiles(
+				root,
+				new String[] { "json" },
+				true);
 		return new LazyPageIterable(metaFilesIterator);
 	}
 
