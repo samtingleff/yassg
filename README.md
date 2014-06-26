@@ -4,6 +4,11 @@ Build it: mvn clean assembly:single
 Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -input input/ -static static/  -output output/
 Push it:  rsync -av --delete output/ sam@some.web.host:~/public_html/
 
+# Inputs #
+
+Pages: individual pages/posts
+Templates: templates used to produce index pages
+
 # Components #
 
 PageDB: responsible for reading in page metadata and raw body contents.
