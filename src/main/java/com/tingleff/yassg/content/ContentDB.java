@@ -1,6 +1,7 @@
 package com.tingleff.yassg.content;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -20,6 +21,11 @@ public class ContentDB implements Iterable<Page> {
 	public void addPage(Page page) {
 		pages.add(page);
 		Collections.sort(pages, pubDateComparator);
+	}
+
+	public void addAll(Collection<Page> pages) {
+		for (Page p : pages)
+			addPage(p);
 	}
 
 	public PageCollection index(int count) {

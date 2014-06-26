@@ -2,6 +2,7 @@ package com.tingleff.yassg.content;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -19,32 +20,29 @@ public class ContentDBTestCase {
 
 	@Test
 	public void index() {
-		Page p1 = createPage(new DateTime(2900, 1, 13, 7, 11));
-		Page p2 = createPage(new DateTime(2014, 2, 11, 7, 11));
-		Page p3 = createPage(new DateTime(2014, 6, 13, 7, 11));
-		Page p4 = createPage(new DateTime(2013, 3, 13, 7, 11));
-		Page p5 = createPage(new DateTime(2011, 8, 29, 12, 11));
-		Page p6 = createPage(new DateTime(2014, 4, 30, 22, 19));
-		contentdb.addPage(p1);
-		contentdb.addPage(p2);
-		contentdb.addPage(p3);
-		contentdb.addPage(p4);
-		contentdb.addPage(p5);
-		contentdb.addPage(p6);
+		List<Page> pages = Arrays.asList(
+				createPage(new DateTime(2900, 1, 13, 7, 11)),
+				createPage(new DateTime(2014, 2, 11, 7, 11)),
+				createPage(new DateTime(2014, 6, 13, 7, 11)),
+				createPage(new DateTime(2013, 3, 13, 7, 11)),
+				createPage(new DateTime(2011, 8, 29, 12, 11)),
+				createPage(new DateTime(2014, 4, 30, 22, 19)));
+		contentdb.addAll(pages);
+
 		PageCollection pc = contentdb.index(10);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(5, pc.size());
-		Assert.assertEquals(p3, pc.asList().get(0));
-		Assert.assertEquals(p6, pc.asList().get(1));
-		Assert.assertEquals(p2, pc.asList().get(2));
-		Assert.assertEquals(p4, pc.asList().get(3));
-		Assert.assertEquals(p5, pc.asList().get(4));
+		Assert.assertEquals(pages.get(2), pc.asList().get(0));
+		Assert.assertEquals(pages.get(5), pc.asList().get(1));
+		Assert.assertEquals(pages.get(1), pc.asList().get(2));
+		Assert.assertEquals(pages.get(3), pc.asList().get(3));
+		Assert.assertEquals(pages.get(4), pc.asList().get(4));
 
 		pc = contentdb.index(2);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(2, pc.size());
-		Assert.assertEquals(p3, pc.asList().get(0));
-		Assert.assertEquals(p6, pc.asList().get(1));
+		Assert.assertEquals(pages.get(2), pc.asList().get(0));
+		Assert.assertEquals(pages.get(5), pc.asList().get(1));
 	}
 
 	private Page createPage(DateTime pubDate) {
