@@ -28,7 +28,7 @@ public class ContentDB implements Iterable<Page> {
 			addPage(p);
 	}
 
-	public PageCollection index(int count) {
+	public PageCollection first(int count) {
 		// return first n items where pub date is before now
 		DateTime now = new DateTime();
 		List<Page> results = new ArrayList<Page>(count);

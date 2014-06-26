@@ -29,7 +29,7 @@ public class ContentDBTestCase {
 				createPage(new DateTime(2014, 4, 30, 22, 19)));
 		contentdb.addAll(pages);
 
-		PageCollection pc = contentdb.index(10);
+		PageCollection pc = contentdb.first(10);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(5, pc.size());
 		Assert.assertEquals(pages.get(2), pc.asList().get(0));
@@ -38,7 +38,7 @@ public class ContentDBTestCase {
 		Assert.assertEquals(pages.get(3), pc.asList().get(3));
 		Assert.assertEquals(pages.get(4), pc.asList().get(4));
 
-		pc = contentdb.index(2);
+		pc = contentdb.first(2);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(2, pc.size());
 		Assert.assertEquals(pages.get(2), pc.asList().get(0));
