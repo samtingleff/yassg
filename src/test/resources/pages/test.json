@@ -1,0 +1,9 @@
+{
+ "author": "sam",
+ "title": "Test page bro",
+ "keywords": "keywords here",
+ "description": "description here",
+ "tags": ["tag1", "tag2", "tag3"],
+ "slug": "test-slug-bro",
+ "pubDate": "2014-06-17 11:13"
+}
