@@ -23,6 +23,7 @@ public class FilePageDBTestCase {
 		String id = "test";
 		Page page = db.read(id);
 		Assert.assertNotNull(page);
+		Assert.assertNotEquals(0l, page.getModified());
 		Assert.assertEquals("sam", page.getAuthor());
 		Assert.assertEquals("Test page bro", page.getTitle());
 		Assert.assertEquals("keywords here", page.getKeywords());

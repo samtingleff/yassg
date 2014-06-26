@@ -6,6 +6,8 @@ import org.joda.time.DateTime;
 
 public class Page {
 
+	private long modified;
+
 	private String author;
 
 	private String title;
@@ -22,7 +24,8 @@ public class Page {
 
 	private String body;
 
-	public Page(String author,
+	public Page(long modified,
+			String author,
 			String title,
 			String keywords,
 			String description,
@@ -30,6 +33,7 @@ public class Page {
 			String slug,
 			DateTime pubDate,
 			String body) {
+		this.modified = modified;
 		this.author = author;
 		this.title = title;
 		this.keywords = keywords;
@@ -41,6 +45,10 @@ public class Page {
 	}
 
 	public Page() {
+	}
+
+	public long getModified() {
+		return modified;
 	}
 
 	public String getAuthor() {

@@ -59,16 +59,17 @@ public class FilePageDB implements PageDB {
 		File bodyFile = new File(metaFile.getParentFile(), id + ".html");
 		PageMetaTO meta = mapper.readValue(metaFile, PageMetaTO.class);
 		String body = readFile(bodyFile);
-		Page p = convert(meta, body);
 		long modified = (metaFile.lastModified() > bodyFile.lastModified())
 				? metaFile.lastModified()
 				: bodyFile.lastModified();
+		Page p = convert(meta, modified, body);
 		return p;
 		
 	}
 
-	private Page convert(PageMetaTO to, String body) throws ParseException {
+	private Page convert(PageMetaTO to, long modified, String body) throws ParseException {
 		Page p = new Page(
+				modified,
 				to.getAuthor(),
 				to.getTitle(),
 				to.getKeywords(),
