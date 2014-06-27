@@ -2,11 +2,15 @@ package com.tingleff.yassg;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.codec.binary.Hex;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -88,6 +92,9 @@ public class Main {
 		// write out /feed.rss
 		writeRSS();
 
+		// write out /atom.xml
+		writeAtom();
+
 		// write out static
 		writeStaticContent();
 	}
@@ -113,11 +120,25 @@ public class Main {
 		for (Page p : pages) {
 			rendered.add(render(p));
 		}
-		TemplateInstance ti = pageTemplateEngine.parse("feed");
+		TemplateInstance ti = pageTemplateEngine.parse("rss");
 		ti.put("buildDate", rssDateFormat.format(now));
 		ti.put("items", rendered);
 		String body = ti.render();
-		writer.writeFeed(body);
+		writer.writeFeed(body, "feed.rss");
+	}
+
+	private void writeAtom() throws IOException {
+		Date now = new Date();
+		List<Page> pages = contentdb.recent(indexCount);
+		List<RenderedPage> rendered = new ArrayList<RenderedPage>(pages.size());
+		for (Page p : pages) {
+			rendered.add(render(p));
+		}
+		TemplateInstance ti = pageTemplateEngine.parse("atom");
+		ti.put("buildDate", rssDateFormat.format(now));
+		ti.put("items", rendered);
+		String body = ti.render();
+		writer.writeFeed(body, "atom.xml");
 	}
 
 	private void writePage(Page page) throws IOException {
@@ -136,7 +157,9 @@ public class Main {
 
 	private RenderedPage render(Page p) throws IOException {
 		String renderedBody = bodyTemplateEngine.parse(p.getBody()).render();
+		String id = getId(p, renderedBody);
 		RenderedPage r = new RenderedPage(
+				id,
 				p.getAuthor(),
 				p.getTitle(),
 				p.getKeywords(),
@@ -150,5 +173,20 @@ public class Main {
 						p.getSlug()),
 				renderedBody);
 		return r;
+	}
+
+	private String getId(Page p, String body) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			md.update(p.getAuthor().getBytes());
+			md.update(p.getTitle().getBytes());
+			md.update(p.getSlug().getBytes());
+			md.update(body.getBytes());
+			byte[] bytes = md.digest();
+			return Hex.encodeHexString(bytes);
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("Damn you java");
+		} finally {
+		}
 	}
 }

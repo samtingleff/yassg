@@ -4,6 +4,8 @@ import java.util.Set;
 
 public class RenderedPage {
 
+	private String id;
+
 	private String author;
 
 	private String title;
@@ -24,7 +26,8 @@ public class RenderedPage {
 
 	private String body;
 
-	public RenderedPage(String author,
+	public RenderedPage(String id,
+			String author,
 			String title,
 			String keywords,
 			String description,
@@ -34,6 +37,7 @@ public class RenderedPage {
 			String pubDateRSS,
 			String href,
 			String body) {
+		this.id = id;
 		this.author = author;
 		this.title = title;
 		this.keywords = keywords;
@@ -44,6 +48,10 @@ public class RenderedPage {
 		this.pubDateRSS = pubDateRSS;
 		this.href = href;
 		this.body = body;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	public String getAuthor() {
