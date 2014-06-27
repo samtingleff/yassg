@@ -20,7 +20,7 @@ public class ContentFileWriterTestCase {
 	@Test
 	public void futurePubDate() throws Exception {
 		Page p = createPage(new DateTime(2999, 12, 31, 23, 59), "slug-dude-1");
-		Assert.assertFalse(cfw.shouldWrite(p));
+		Assert.assertFalse(cfw.shouldWritePage(p));
 	}
 
 	@Test
@@ -29,10 +29,10 @@ public class ContentFileWriterTestCase {
 		File path = cfw.getPath(p);
 		if (path.exists())
 			path.delete();
-		Assert.assertTrue(cfw.shouldWrite(p));
+		Assert.assertTrue(cfw.shouldWritePage(p));
 		Thread.sleep(1000);
-		cfw.write(p, "test body");
-		Assert.assertFalse(cfw.shouldWrite(p));
+		cfw.writePage(p, "test body");
+		Assert.assertFalse(cfw.shouldWritePage(p));
 	}
 
 	private Page createPage(DateTime pubDate, String slug) {

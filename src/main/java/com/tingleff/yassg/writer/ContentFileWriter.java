@@ -21,7 +21,7 @@ public class ContentFileWriter {
 		this.dest = new File(dest);
 	}
 
-	public boolean shouldWrite(Page p) {
+	public boolean shouldWritePage(Page p) {
 		DateTime now = new DateTime();
 		if (now.isBefore(p.getPubDate())) {
 			return false;
@@ -36,9 +36,9 @@ public class ContentFileWriter {
 		return true;
 	}
 
-	public void write(Page p, String body) throws IOException {
+	public void writePage(Page p, String body) throws IOException {
 		File output = getPath(p);
-		if (!shouldWrite(p))
+		if (!shouldWritePage(p))
 			return;
 		File parent = output.getParentFile();
 		parent.mkdirs();
