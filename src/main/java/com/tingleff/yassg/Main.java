@@ -27,8 +27,8 @@ public class Main {
 		m.run();
 	}
 
-	@Parameter(names = "-input")
-	private String inputDir;
+	@Parameter(names = "-content")
+	private String contentDir;
 
 	@Parameter(names = "-templates")
 	private String templateDir;
@@ -51,7 +51,7 @@ public class Main {
 	private ContentFileWriter writer;
 
 	public void run() throws Exception {
-		pagedb = new FilePageDB(inputDir);
+		pagedb = new FilePageDB(contentDir);
 		contentdb = new ContentDB();
 		pageTemplateEngine = new StringTemplate4Engine();
 		writer = new ContentFileWriter(outputDir);
