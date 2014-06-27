@@ -56,7 +56,9 @@ public class Main {
 		pageTemplateEngine = new StringTemplate4Engine();
 		writer = new ContentFileWriter(outputDir);
 
-		// iterate through pages, adding to a ContentDB
+		// iterate through pages
+		//  - add each to content db
+		//  - write each
 		Iterable<Page> iter = pagedb.iterator();
 		for (Page page : iter) {
 			contentdb.addPage(page);
