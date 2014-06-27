@@ -41,6 +41,28 @@ public class StringTemplate4EngineTestCase {
 		Assert.assertEquals("this is foobared to the 10 level, bro.", result);
 	}
 
+	@Test
+	public void conditionalNonNull() throws IOException {
+		String t = "this is foobared, $foo.bar:{$foo.bar$ yo}$.";
+		TemplateInstance ti = te.parse(t);
+		Assert.assertNotNull(ti);
+		Foo foo = new Foo(10, "bro");
+		ti.put("foo", foo);
+		String result = ti.render();
+		Assert.assertNotNull(result);
+		Assert.assertEquals("this is foobared, bro yo.", result);
+	}
+
+	@Test
+	public void conditionalNull() throws IOException {
+		String t = "this is foobared$foo.bar:{, $foo.bar$ yo}$.";
+		TemplateInstance ti = te.parse(t);
+		Assert.assertNotNull(ti);
+		String result = ti.render();
+		Assert.assertNotNull(result);
+		Assert.assertEquals("this is foobared.", result);
+	}
+
 	private String loadResource(String path) throws IOException {
 		InputStream is = getClass().getResourceAsStream(path);
 		InputStreamReader isr = new InputStreamReader(is);
