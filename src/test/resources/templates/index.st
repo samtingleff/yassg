@@ -2,7 +2,7 @@
  <head>
  </head>
  <body>
-  $items.list:{item|
+  $items:{item|
    <p>$item.title$</p>
   }$
  </body>

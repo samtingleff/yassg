@@ -1,6 +1,7 @@
 package com.tingleff.yassg.content;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import com.tingleff.yassg.model.Page;
-import com.tingleff.yassg.model.PageCollection;
 
 @RunWith(JUnit4.class)
 public class ContentDBTestCase {
@@ -29,20 +29,20 @@ public class ContentDBTestCase {
 				createPage(new DateTime(2014, 4, 30, 22, 19)));
 		contentdb.addAll(pages);
 
-		PageCollection pc = contentdb.recent(10);
+		List<Page> pc = contentdb.recent(10);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(5, pc.size());
-		Assert.assertEquals(pages.get(2), pc.getList().get(0));
-		Assert.assertEquals(pages.get(5), pc.getList().get(1));
-		Assert.assertEquals(pages.get(1), pc.getList().get(2));
-		Assert.assertEquals(pages.get(3), pc.getList().get(3));
-		Assert.assertEquals(pages.get(4), pc.getList().get(4));
+		Assert.assertEquals(pages.get(2), pc.get(0));
+		Assert.assertEquals(pages.get(5), pc.get(1));
+		Assert.assertEquals(pages.get(1), pc.get(2));
+		Assert.assertEquals(pages.get(3), pc.get(3));
+		Assert.assertEquals(pages.get(4), pc.get(4));
 
 		pc = contentdb.recent(2);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(2, pc.size());
-		Assert.assertEquals(pages.get(2), pc.getList().get(0));
-		Assert.assertEquals(pages.get(5), pc.getList().get(1));
+		Assert.assertEquals(pages.get(2), pc.get(0));
+		Assert.assertEquals(pages.get(5), pc.get(1));
 	}
 
 	private Page createPage(DateTime pubDate) {

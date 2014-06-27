@@ -11,7 +11,6 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import com.tingleff.yassg.model.Page;
-import com.tingleff.yassg.model.PageCollection;
 
 public class ContentDB implements Iterable<Page> {
 	private PubDateComparator pubDateComparator = new PubDateComparator();
@@ -28,7 +27,7 @@ public class ContentDB implements Iterable<Page> {
 			addPage(p);
 	}
 
-	public PageCollection recent(int count) {
+	public List<Page> recent(int count) {
 		// return first n items where pub date is before now
 		DateTime now = new DateTime();
 		List<Page> results = new ArrayList<Page>(count);
@@ -39,7 +38,7 @@ public class ContentDB implements Iterable<Page> {
 				break;
 			results.add(p);
 		}
-		return new PageCollection(results);
+		return results;
 	}
 
 	public Iterator<Page> iterator() {

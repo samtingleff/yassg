@@ -3,6 +3,10 @@ package com.tingleff.yassg;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
@@ -11,9 +15,10 @@ import com.beust.jcommander.Parameter;
 import com.tingleff.yassg.content.ContentDB;
 import com.tingleff.yassg.formats.TemplateEngine;
 import com.tingleff.yassg.formats.TemplateInstance;
+import com.tingleff.yassg.formats.mk.MarkdownTemplateEngine;
 import com.tingleff.yassg.formats.st4.StringTemplate4Engine;
 import com.tingleff.yassg.model.Page;
-import com.tingleff.yassg.model.PageCollection;
+import com.tingleff.yassg.model.RenderedPage;
 import com.tingleff.yassg.pagedb.PageDB;
 import com.tingleff.yassg.pagedb.file.FilePageDB;
 import com.tingleff.yassg.rsync.Rsync;
@@ -27,6 +32,10 @@ public class Main {
 		new JCommander(m).parse(args);
 		m.run();
 	}
+
+	private static DateFormat htmlDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+	private static DateFormat rssDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
 	@Parameter(names = "-content", required = true)
 	private String contentDir;
@@ -52,12 +61,15 @@ public class Main {
 
 	private TemplateEngine pageTemplateEngine;
 
+	private TemplateEngine bodyTemplateEngine;
+
 	private ContentFileWriter writer;
 
 	public void run() throws Exception {
 		pagedb = new FilePageDB(contentDir);
 		contentdb = new ContentDB();
 		pageTemplateEngine = new StringTemplate4Engine();
+		bodyTemplateEngine = new MarkdownTemplateEngine();
 		writer = new ContentFileWriter(outputDir);
 
 		// iterate through pages
@@ -80,9 +92,13 @@ public class Main {
 	}
 
 	private void writeIndex() throws IOException {
-		PageCollection items = contentdb.recent(indexCount);
+		List<Page> pages = contentdb.recent(indexCount);
+		List<RenderedPage> rendered = new ArrayList<RenderedPage>(pages.size());
+		for (Page p : pages) {
+			rendered.add(render(p));
+		}
 		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("index.st"));
-		ti.put("items", items);
+		ti.put("items", rendered);
 		String body = ti.render();
 		writer.writeIndex(body);
 	}
@@ -93,7 +109,7 @@ public class Main {
 		if (!writer.shouldWritePage(page))
 			return;
 		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("post.st"));
-		ti.put("page", page);
+		ti.put("page", render(page));
 		String body = ti.render();
 		writer.writePage(page, body);
 	}
@@ -101,6 +117,21 @@ public class Main {
 	private void writeStaticContent() throws Exception {
 		Rsync rsync = new RsyncCommand();
 		rsync.rsync(new File(staticDir), new File(outputDir, "static"), verbose, true);
+	}
+
+	private RenderedPage render(Page p) throws IOException {
+		String renderedBody = bodyTemplateEngine.parse(p.getBody()).render();
+		RenderedPage r = new RenderedPage(
+				p.getAuthor(),
+				p.getTitle(),
+				p.getKeywords(),
+				p.getDescription(),
+				p.getTags(),
+				p.getSlug(),
+				htmlDateFormat.format(p.getPubDate().toDate()),
+				rssDateFormat.format(p.getPubDate().toDate()),
+				renderedBody);
+		return r;
 	}
 
 	private String readTemplate(String id) throws IOException {
