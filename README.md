@@ -7,7 +7,7 @@ Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
 # Inputs #
 
 Pages: individual pages/posts
-Templates: templates used to produce index pages
+Templates: templates used to produce pages
 
 # Components #
 
