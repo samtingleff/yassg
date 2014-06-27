@@ -13,6 +13,7 @@ import com.tingleff.yassg.formats.TemplateEngine;
 import com.tingleff.yassg.formats.TemplateInstance;
 import com.tingleff.yassg.formats.st4.StringTemplate4Engine;
 import com.tingleff.yassg.model.Page;
+import com.tingleff.yassg.model.PageCollection;
 import com.tingleff.yassg.pagedb.PageDB;
 import com.tingleff.yassg.pagedb.file.FilePageDB;
 import com.tingleff.yassg.rsync.Rsync;
@@ -27,20 +28,23 @@ public class Main {
 		m.run();
 	}
 
-	@Parameter(names = "-content")
+	@Parameter(names = "-content", required = true)
 	private String contentDir;
 
-	@Parameter(names = "-templates")
+	@Parameter(names = "-templates", required = true)
 	private String templateDir;
 
-	@Parameter(names = "-static")
+	@Parameter(names = "-static", required = true)
 	private String staticDir;
 
-	@Parameter(names = "-output")
+	@Parameter(names = "-output", required = true)
 	private String outputDir;
 
 	@Parameter(names = "-verbose")
-	private boolean verbose;
+	private boolean verbose = false;
+
+	@Parameter(names = "-index-count")
+	private int indexCount = 10;
 
 	private PageDB pagedb;
 
@@ -75,17 +79,18 @@ public class Main {
 		writeStaticContent();
 	}
 
-	private void writeIndex() { }
+	private void writeIndex() throws IOException {
+	}
 
 	private void writeRSS() { }
 
 	private void writePage(Page page) throws IOException {
-		if (!writer.shouldWrite(page))
+		if (!writer.shouldWritePage(page))
 			return;
-		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("post.st"));
+		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("/post.st"));
 		ti.put("page", page);
 		String body = ti.render();
-		writer.write(page, body);
+		writer.writePage(page, body);
 	}
 
 	private void writeStaticContent() throws Exception {
