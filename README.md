@@ -2,7 +2,7 @@
 
 Build it: mvn clean compile assembly:single
 Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -static static/  -output output/
-Push it:  rsync -av --delete output/ sam@some.web.host:~/public_html/
+Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
 
 # Inputs #
 
@@ -17,17 +17,17 @@ ContentDB: understands "blogging" as a data model
  - reads from PageDB
  - writes individual pages to html via a ContentWriter
  - writes index pages to html via a ContentWriter
- - writes tag-based indexes to html via a ContentWriter
  - writes index pages to rss via a ContentWriter
+
+TemplateEngine: responsible for converting from a source format (markdown) to a destination format (html).
 
 ContentWriter: writes Page objects to an output destination
 
 Rsync: rsync from static/ to output/static/
 
-TemplateEngine: responsible for converting from a source format (markdown) to a destination format (html).
-
 # Future Directions #
 
-- Build a search index
+- Build a search index (how to serve statically?)
+- Do something with tags?
 - Suggestions of related content
 
