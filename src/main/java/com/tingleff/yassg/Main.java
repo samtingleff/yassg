@@ -1,15 +1,12 @@
 package com.tingleff.yassg;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -72,7 +69,7 @@ public class Main {
 	public void run() throws Exception {
 		pagedb = new FilePageDB(contentDir);
 		contentdb = new ContentDB();
-		pageTemplateEngine = new StringTemplate4Engine();
+		pageTemplateEngine = new StringTemplate4Engine(templateDir);
 		bodyTemplateEngine = new MarkdownTemplateEngine();
 		writer = new ContentFileWriter(outputDir);
 
@@ -102,7 +99,7 @@ public class Main {
 		for (Page p : pages) {
 			rendered.add(render(p));
 		}
-		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("index.st"));
+		TemplateInstance ti = pageTemplateEngine.parse("index");
 		ti.put("buildDate", htmlDateFormat.format(now));
 		ti.put("items", rendered);
 		String body = ti.render();
@@ -116,7 +113,7 @@ public class Main {
 		for (Page p : pages) {
 			rendered.add(render(p));
 		}
-		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("feed.st"));
+		TemplateInstance ti = pageTemplateEngine.parse("feed");
 		ti.put("buildDate", rssDateFormat.format(now));
 		ti.put("items", rendered);
 		String body = ti.render();
@@ -126,7 +123,7 @@ public class Main {
 	private void writePage(Page page) throws IOException {
 		if (!writer.shouldWritePage(page))
 			return;
-		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("post.st"));
+		TemplateInstance ti = pageTemplateEngine.parse("post");
 		ti.put("page", render(page));
 		String body = ti.render();
 		writer.writePage(page, body);
@@ -153,15 +150,5 @@ public class Main {
 						p.getSlug()),
 				renderedBody);
 		return r;
-	}
-
-	private String readTemplate(String id) throws IOException {
-		File f = new File(templateDir, id);
-		FileInputStream fis = new FileInputStream(f);
-		try {
-			return IOUtils.toString(fis);
-		} finally {
-			fis.close();
-		}
 	}
 }

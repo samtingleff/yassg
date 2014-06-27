@@ -1,9 +1,6 @@
 package com.tingleff.yassg.formats.st4;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,12 +13,11 @@ import com.tingleff.yassg.formats.TemplateInstance;
 @RunWith(JUnit4.class)
 public class StringTemplate4EngineTestCase {
 
-	private TemplateEngine te = new StringTemplate4Engine();
+	private TemplateEngine te = new StringTemplate4Engine("src/test/resources/templates/simple");
 
 	@Test
 	public void simple() throws IOException {
-		String t = "Hello, $name$";
-		TemplateInstance ti = te.parse(t);
+		TemplateInstance ti = te.parse("var");
 		Assert.assertNotNull(ti);
 		ti.put("name", "foo");
 		String result = ti.render();
@@ -31,8 +27,7 @@ public class StringTemplate4EngineTestCase {
 
 	@Test
 	public void object() throws IOException {
-		String t = "this is foobared to the $foo.foo$ level, $foo.bar$.";
-		TemplateInstance ti = te.parse(t);
+		TemplateInstance ti = te.parse("object");
 		Assert.assertNotNull(ti);
 		Foo foo = new Foo(10, "bro");
 		ti.put("foo", foo);
@@ -43,8 +38,7 @@ public class StringTemplate4EngineTestCase {
 
 	@Test
 	public void conditionalNonNull() throws IOException {
-		String t = "this is foobared, $foo.bar:{$foo.bar$ yo}$.";
-		TemplateInstance ti = te.parse(t);
+		TemplateInstance ti = te.parse("conditional");
 		Assert.assertNotNull(ti);
 		Foo foo = new Foo(10, "bro");
 		ti.put("foo", foo);
@@ -55,25 +49,11 @@ public class StringTemplate4EngineTestCase {
 
 	@Test
 	public void conditionalNull() throws IOException {
-		String t = "this is foobared$foo.bar:{, $foo.bar$ yo}$.";
-		TemplateInstance ti = te.parse(t);
+		TemplateInstance ti = te.parse("conditional");
 		Assert.assertNotNull(ti);
 		String result = ti.render();
 		Assert.assertNotNull(result);
-		Assert.assertEquals("this is foobared.", result);
-	}
-
-	private String loadResource(String path) throws IOException {
-		InputStream is = getClass().getResourceAsStream(path);
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		char[] buffer = new char[128];
-		int read = br.read(buffer);
-		String s = new String(buffer, 0, read);
-		br.close();
-		isr.close();
-		is.close();
-		return s;
+		Assert.assertEquals("this is foobared, .", result);
 	}
 
 	private static class Foo {

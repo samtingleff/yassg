@@ -4,5 +4,8 @@
  </head>
  <body>
   $page.body$
+
+  $footer()$
+
  </body>
 </html>

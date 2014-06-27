@@ -1,0 +1,1 @@
+this is foobared, $foo.bar:{$foo.bar$ yo}$.
