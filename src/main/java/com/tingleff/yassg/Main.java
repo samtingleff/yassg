@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -33,9 +34,12 @@ public class Main {
 		m.run();
 	}
 
-	private static DateFormat htmlDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	private static DateFormat htmlDateFormat = new SimpleDateFormat("EEEEE, MMMMM dd @ HH:mm");
 
-	private static DateFormat rssDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	// Fri, 21 Dec 2012 10:00:01 GMT
+	private static DateFormat rssDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+
+	private DateFormat hrefDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
 	@Parameter(names = "-content", required = true)
 	private String contentDir;
@@ -92,18 +96,32 @@ public class Main {
 	}
 
 	private void writeIndex() throws IOException {
+		Date now = new Date();
 		List<Page> pages = contentdb.recent(indexCount);
 		List<RenderedPage> rendered = new ArrayList<RenderedPage>(pages.size());
 		for (Page p : pages) {
 			rendered.add(render(p));
 		}
 		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("index.st"));
+		ti.put("buildDate", htmlDateFormat.format(now));
 		ti.put("items", rendered);
 		String body = ti.render();
 		writer.writeIndex(body);
 	}
 
-	private void writeRSS() { }
+	private void writeRSS() throws IOException {
+		Date now = new Date();
+		List<Page> pages = contentdb.recent(indexCount);
+		List<RenderedPage> rendered = new ArrayList<RenderedPage>(pages.size());
+		for (Page p : pages) {
+			rendered.add(render(p));
+		}
+		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("feed.st"));
+		ti.put("buildDate", rssDateFormat.format(now));
+		ti.put("items", rendered);
+		String body = ti.render();
+		writer.writeFeed(body);
+	}
 
 	private void writePage(Page page) throws IOException {
 		if (!writer.shouldWritePage(page))
@@ -130,6 +148,9 @@ public class Main {
 				p.getSlug(),
 				htmlDateFormat.format(p.getPubDate().toDate()),
 				rssDateFormat.format(p.getPubDate().toDate()),
+				String.format("%1$s/%2$s/",
+						hrefDateFormat.format(p.getPubDate().toDate()),
+						p.getSlug()),
 				renderedBody);
 		return r;
 	}

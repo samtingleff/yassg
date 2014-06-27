@@ -20,6 +20,8 @@ public class RenderedPage {
 
 	private String pubDateRSS;
 
+	private String href;
+
 	private String body;
 
 	public RenderedPage(String author,
@@ -30,6 +32,7 @@ public class RenderedPage {
 			String slug,
 			String pubDateHtml,
 			String pubDateRSS,
+			String href,
 			String body) {
 		this.author = author;
 		this.title = title;
@@ -39,6 +42,7 @@ public class RenderedPage {
 		this.slug = slug;
 		this.pubDateHtml = pubDateHtml;
 		this.pubDateRSS = pubDateRSS;
+		this.href = href;
 		this.body = body;
 	}
 
@@ -72,6 +76,10 @@ public class RenderedPage {
 
 	public String getPubDateRSS() {
 		return pubDateRSS;
+	}
+
+	public String getHref() {
+		return href;
 	}
 
 	public String getBody() {

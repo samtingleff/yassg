@@ -62,6 +62,18 @@ public class ContentFileWriter {
 		}
 	}
 
+	public void writeFeed(String body) throws IOException {
+		File output = new File(dest, "feed.rss");
+		File parent = output.getParentFile();
+		parent.mkdirs();
+		FileOutputStream os = new FileOutputStream(output);
+		try {
+			IOUtils.write(body, os);
+		} finally {
+			os.close();
+		}
+	}
+
 	File getPath(Page p) {
 		File output = new File(dest,
 				String.format("%1$s/%2$s/index.html",
