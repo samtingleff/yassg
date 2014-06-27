@@ -32,17 +32,17 @@ public class ContentDBTestCase {
 		PageCollection pc = contentdb.recent(10);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(5, pc.size());
-		Assert.assertEquals(pages.get(2), pc.asList().get(0));
-		Assert.assertEquals(pages.get(5), pc.asList().get(1));
-		Assert.assertEquals(pages.get(1), pc.asList().get(2));
-		Assert.assertEquals(pages.get(3), pc.asList().get(3));
-		Assert.assertEquals(pages.get(4), pc.asList().get(4));
+		Assert.assertEquals(pages.get(2), pc.getList().get(0));
+		Assert.assertEquals(pages.get(5), pc.getList().get(1));
+		Assert.assertEquals(pages.get(1), pc.getList().get(2));
+		Assert.assertEquals(pages.get(3), pc.getList().get(3));
+		Assert.assertEquals(pages.get(4), pc.getList().get(4));
 
 		pc = contentdb.recent(2);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(2, pc.size());
-		Assert.assertEquals(pages.get(2), pc.asList().get(0));
-		Assert.assertEquals(pages.get(5), pc.asList().get(1));
+		Assert.assertEquals(pages.get(2), pc.getList().get(0));
+		Assert.assertEquals(pages.get(5), pc.getList().get(1));
 	}
 
 	private Page createPage(DateTime pubDate) {

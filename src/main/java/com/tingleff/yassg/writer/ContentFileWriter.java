@@ -50,6 +50,18 @@ public class ContentFileWriter {
 		}
 	}
 
+	public void writeIndex(String body) throws IOException {
+		File output = new File(dest, "index.html");
+		File parent = output.getParentFile();
+		parent.mkdirs();
+		FileOutputStream os = new FileOutputStream(output);
+		try {
+			IOUtils.write(body, os);
+		} finally {
+			os.close();
+		}
+	}
+
 	File getPath(Page p) {
 		File output = new File(dest,
 				String.format("%1$s/%2$s/index.html",

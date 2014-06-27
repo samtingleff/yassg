@@ -15,7 +15,7 @@ public class PageCollection implements Iterable<Page> {
 		return pages.size();
 	}
 
-	public List<Page> asList() {
+	public List<Page> getList() {
 		return pages;
 	}
 

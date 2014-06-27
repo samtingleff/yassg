@@ -1,8 +1,9 @@
 <html>
  <head>
-  <title>$page.title$</title>
  </head>
  <body>
-  $page.body$
+  $items.list:{item|
+   <p>$item.title$</p>
+  }$
  </body>
 </html>

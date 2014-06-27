@@ -80,6 +80,11 @@ public class Main {
 	}
 
 	private void writeIndex() throws IOException {
+		PageCollection items = contentdb.recent(indexCount);
+		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("index.st"));
+		ti.put("items", items);
+		String body = ti.render();
+		writer.writeIndex(body);
 	}
 
 	private void writeRSS() { }
@@ -87,7 +92,7 @@ public class Main {
 	private void writePage(Page page) throws IOException {
 		if (!writer.shouldWritePage(page))
 			return;
-		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("/post.st"));
+		TemplateInstance ti = pageTemplateEngine.parse(readTemplate("post.st"));
 		ti.put("page", page);
 		String body = ti.render();
 		writer.writePage(page, body);
