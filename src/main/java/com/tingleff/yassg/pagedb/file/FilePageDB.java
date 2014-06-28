@@ -78,7 +78,7 @@ public class FilePageDB implements PageDB {
 				to.getKeywords(),
 				to.getDescription(),
 				to.getTags(),
-				to.getSlug(),
+				to.getHref(),
 				new DateTime(df.parse(to.getPubDate())),
 				body);
 		return p;

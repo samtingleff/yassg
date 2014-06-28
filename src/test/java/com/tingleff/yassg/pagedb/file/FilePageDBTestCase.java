@@ -28,7 +28,7 @@ public class FilePageDBTestCase {
 		Assert.assertEquals("Test page bro", page.getTitle());
 		Assert.assertEquals("keywords here", page.getKeywords());
 		Assert.assertEquals("description here", page.getDescription());
-		Assert.assertEquals("test-slug-bro", page.getSlug());
+		Assert.assertEquals("/test-slug-bro/", page.getHref());
 		Assert.assertEquals(new DateTime(2014, 6, 17, 11, 13), page.getPubDate());
 		Assert.assertEquals(new HashSet<String>(Arrays.asList("tag1", "tag2", "tag3")), page.getTags());
 		Assert.assertEquals("This is a paragraph.\n", page.getBody());

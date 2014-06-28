@@ -3,8 +3,6 @@ package com.tingleff.yassg.writer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -12,8 +10,6 @@ import org.joda.time.DateTime;
 import com.tingleff.yassg.model.Page;
 
 public class ContentFileWriter {
-
-	private DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 
 	private File dest;
 
@@ -64,7 +60,6 @@ public class ContentFileWriter {
 
 	public void writeFeed(String body, String filename) throws IOException {
 		File output = new File(dest, filename);
-System.out.println("writing to " + output.getAbsolutePath());
 		File parent = output.getParentFile();
 		parent.mkdirs();
 		FileOutputStream os = new FileOutputStream(output);
@@ -77,9 +72,8 @@ System.out.println("writing to " + output.getAbsolutePath());
 
 	File getPath(Page p) {
 		File output = new File(dest,
-				String.format("%1$s/%2$s/index.html",
-						df.format(p.getPubDate().toDate()),
-						p.getSlug()));
+				String.format("%1$s/index.html",
+						p.getHref()));
 		return output;
 	}
 }

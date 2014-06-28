@@ -8,16 +8,16 @@
  <language>en-us</language>
  <lastBuildDate>$buildDate$</lastBuildDate>
  <pubDate>$buildDate$</pubDate>
- <generator>clj-blogbuilder (v1/0.1)</generator>
+ <generator>yassg 0.1.0</generator>
  $items:{item|
   <item>
    <title>$item.title$</title>
    <description><![CDATA[$item.body$]]></description>
-   <link>http://sam.tingleff.com/blog/$item.href$</link>
+   <link>http://sam.tingleff.com/blog$item.href$</link>
    $item.tags:{tag|
     <category>$tag$</category>
    }$
-   <comments>http://sam.tingleff.com/blog/$item.href$</comments>
+   <comments>http://sam.tingleff.com/blog$item.href$</comments>
    <pubDate>$item.pubDateRSS$</pubDate>
   </item>
  }$

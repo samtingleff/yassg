@@ -40,8 +40,6 @@ public class Main {
 	// Fri, 21 Dec 2012 10:00:01 GMT
 	private static DateFormat rssDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 
-	private DateFormat hrefDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-
 	@Parameter(names = "-content", required = true)
 	private String contentDir;
 
@@ -165,12 +163,10 @@ public class Main {
 				p.getKeywords(),
 				p.getDescription(),
 				p.getTags(),
-				p.getSlug(),
+				p.getHref(),
 				htmlDateFormat.format(p.getPubDate().toDate()),
 				rssDateFormat.format(p.getPubDate().toDate()),
-				String.format("%1$s/%2$s/",
-						hrefDateFormat.format(p.getPubDate().toDate()),
-						p.getSlug()),
+				p.getHref(),
 				renderedBody);
 		return r;
 	}
@@ -180,7 +176,7 @@ public class Main {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
 			md.update(p.getAuthor().getBytes());
 			md.update(p.getTitle().getBytes());
-			md.update(p.getSlug().getBytes());
+			md.update(p.getHref().getBytes());
 			md.update(body.getBytes());
 			byte[] bytes = md.digest();
 			return Hex.encodeHexString(bytes);

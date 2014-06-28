@@ -23,8 +23,8 @@ class PageMetaTO {
 	@XmlElement(name = "tags")
 	private Set<String> tags;
 
-	@XmlElement(name = "slug")
-	private String slug;
+	@XmlElement(name = "href")
+	private String href;
 
 	@XmlElement(name = "pubDate")
 	private String pubDate;
@@ -71,12 +71,12 @@ class PageMetaTO {
 		this.tags = tags;
 	}
 
-	public String getSlug() {
-		return slug;
+	public String getHref() {
+		return href;
 	}
 
-	public void setSlug(String slug) {
-		this.slug = slug;
+	public void setHref(String href) {
+		this.href = href;
 	}
 
 	public String getPubDate() {

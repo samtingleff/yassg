@@ -10,7 +10,7 @@
  $items:{item|
   <entry>
    <title>$item.title$</title>
-   <link rel="alternate" type="text/html" href="http://sam.tingleff.com/blog/$item.href$"/>
+   <link rel="alternate" type="text/html" href="http://sam.tingleff.com/blog$item.href$"/>
    <id>tag:sam.tingleff.com/$item.id$</id>
    <published>$item.pubDateRSS$</published>
   </entry>

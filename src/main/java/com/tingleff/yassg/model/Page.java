@@ -18,7 +18,7 @@ public class Page {
 
 	private Set<String> tags;
 
-	private String slug;
+	private String href;
 
 	private DateTime pubDate;
 
@@ -30,7 +30,7 @@ public class Page {
 			String keywords,
 			String description,
 			Set<String> tags,
-			String slug,
+			String href,
 			DateTime pubDate,
 			String body) {
 		this.modified = modified;
@@ -39,7 +39,7 @@ public class Page {
 		this.keywords = keywords;
 		this.description = description;
 		this.tags = tags;
-		this.slug = slug;
+		this.href = href;
 		this.pubDate = pubDate;
 		this.body = body;
 	}
@@ -71,8 +71,8 @@ public class Page {
 		return tags;
 	}
 
-	public String getSlug() {
-		return slug;
+	public String getHref() {
+		return href;
 	}
 
 	public DateTime getPubDate() {
