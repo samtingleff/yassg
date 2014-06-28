@@ -6,19 +6,20 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tingleff.yassg.model.Page;
 import com.tingleff.yassg.pagedb.Decorator;
 import com.tingleff.yassg.pagedb.PageDB;
 
 public class FilePageDB implements PageDB {
-	private ObjectMapper mapper = new ObjectMapper();
 
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -32,7 +33,7 @@ public class FilePageDB implements PageDB {
 
 	@Override
 	public Page read(String id) throws IOException, ParseException {
-		File metaFile = new File(root, id + ".json");
+		File metaFile = new File(root, id + ".properties");
 		return read(metaFile, id);
 	}
 
@@ -48,40 +49,49 @@ public class FilePageDB implements PageDB {
 	public Iterable<Page> iterator() {
 		Iterator<File> metaFilesIterator = FileUtils.iterateFiles(
 				root,
-				new String[] { "json" },
+				new String[] { "properties" },
 				true);
 		return new LazyPageIterable(metaFilesIterator);
 	}
 
 	private Page read(File metaFile) throws IOException, ParseException {
-		String id = metaFile.getName().substring(0, metaFile.getName().indexOf(".json"));
+		String id = metaFile.getName().substring(0, metaFile.getName().indexOf(".properties"));
 		return read(metaFile, id);
 	}
 
 	private Page read(File metaFile, String id) throws IOException, ParseException {
 		File bodyFile = new File(metaFile.getParentFile(), id + ".markdown");
-		PageMetaTO meta = mapper.readValue(metaFile, PageMetaTO.class);
-		String body = readFile(bodyFile);
 		long modified = (metaFile.lastModified() > bodyFile.lastModified())
 				? metaFile.lastModified()
 				: bodyFile.lastModified();
-		Page p = convert(meta, modified, body);
-		return p;
-		
-	}
 
-	private Page convert(PageMetaTO to, long modified, String body) throws ParseException {
-		Page p = new Page(
-				modified,
-				to.getAuthor(),
-				to.getTitle(),
-				to.getKeywords(),
-				to.getDescription(),
-				to.getTags(),
-				to.getHref(),
-				new DateTime(df.parse(to.getPubDate())),
-				body);
-		return p;
+		String body = readFile(bodyFile);
+
+		Properties props = new Properties();
+		FileInputStream fis = new FileInputStream(metaFile);
+		try {
+			props.load(fis);
+			Set<String> tags = new HashSet<String>();
+			String tagProperty = props.getProperty("tags");
+			if (tagProperty != null) {
+				String[] vals = tagProperty.split(",\\s?");
+				for (String v : vals)
+					tags.add(v);
+			}
+			Page p = new Page(
+					modified,
+					props.getProperty("author"),
+					props.getProperty("title"),
+					props.getProperty("keywords"),
+					props.getProperty("description"),
+					tags,
+					props.getProperty("href"),
+					new DateTime(df.parse(props.getProperty("pubDate"))),
+					body);
+			return p;
+		} finally {
+			fis.close();
+		}
 	}
 
 	private String readFile(File path) throws IOException {
