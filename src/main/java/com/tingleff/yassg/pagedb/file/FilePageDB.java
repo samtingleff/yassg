@@ -59,7 +59,7 @@ public class FilePageDB implements PageDB {
 	}
 
 	private Page read(File metaFile, String id) throws IOException, ParseException {
-		File bodyFile = new File(metaFile.getParentFile(), id + ".mk");
+		File bodyFile = new File(metaFile.getParentFile(), id + ".markdown");
 		PageMetaTO meta = mapper.readValue(metaFile, PageMetaTO.class);
 		String body = readFile(bodyFile);
 		long modified = (metaFile.lastModified() > bodyFile.lastModified())
