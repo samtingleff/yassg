@@ -23,16 +23,15 @@ public class FlickrPlugin extends Plugin {
 		String user = params.get("user");
 		if (user == null)
 			user = "samtingleff";
-		String id = params.get("id");
-		if (id == null)
-			id = "14521186741";
 
-		sb.append(String.format(
-				"<iframe src=\"https://www.flickr.com/photos/%1$s/%2$s/player/\" width=\"%3$s\" height=\"%4$s\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>",
-				user,
-				id,
-				width,
-				height));
+		for (String line : lines) {
+			sb.append(String.format(
+					"<iframe src=\"https://www.flickr.com/photos/%1$s/%2$s/player/\" width=\"%3$s\" height=\"%4$s\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>",
+					user,
+					line,
+					width,
+					height));
+		}
 	}
 
 }
