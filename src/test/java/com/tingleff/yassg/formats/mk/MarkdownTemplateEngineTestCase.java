@@ -24,4 +24,14 @@ public class MarkdownTemplateEngineTestCase {
 		Assert.assertNotNull(result);
 		Assert.assertEquals("<p>This is <strong>bold</strong> text</p>\n", result);
 	}
+
+	@Test
+	public void flickrPlugin() throws IOException {
+		String t = "%%% flickr username=samtingleff id=14521186741 width=450\ncontent\n%%%";
+		TemplateInstance ti = te.parse(t);
+		Assert.assertNotNull(ti);
+		String result = ti.render();
+		Assert.assertNotNull(result);
+		Assert.assertEquals("<iframe src=\"https://www.flickr.com/photos/samtingleff/14521186741/player/\" width=\"450\" height=\"375\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>", result);
+	}
 }
