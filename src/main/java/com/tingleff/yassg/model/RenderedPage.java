@@ -20,6 +20,8 @@ public class RenderedPage {
 
 	private String pubDateHtml;
 
+	private String pubDateHtmlShort;
+
 	private String pubDateRSS;
 
 	private String href;
@@ -34,6 +36,7 @@ public class RenderedPage {
 			Set<String> tags,
 			String slug,
 			String pubDateHtml,
+			String pubDateHtmlShort,
 			String pubDateRSS,
 			String href,
 			String body) {
@@ -45,6 +48,7 @@ public class RenderedPage {
 		this.tags = tags;
 		this.slug = slug;
 		this.pubDateHtml = pubDateHtml;
+		this.pubDateHtmlShort = pubDateHtmlShort;
 		this.pubDateRSS = pubDateRSS;
 		this.href = href;
 		this.body = body;
@@ -80,6 +84,10 @@ public class RenderedPage {
 
 	public String getPubDateHtml() {
 		return pubDateHtml;
+	}
+
+	public String getPubDateHtmlShort() {
+		return pubDateHtmlShort;
 	}
 
 	public String getPubDateRSS() {
