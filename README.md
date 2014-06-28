@@ -9,6 +9,14 @@ Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
 Pages: individual pages/posts
 Templates: templates used to produce pages
 
+# Plugins #
+
+Flickr
+
+%%% flickr username=samtingleff width=500 height=350
+14521186741
+%%%
+
 # Components #
 
 PageDB: responsible for reading in page metadata and raw body contents.
