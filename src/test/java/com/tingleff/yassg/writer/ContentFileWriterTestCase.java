@@ -37,6 +37,7 @@ public class ContentFileWriterTestCase {
 
 	private Page createPage(DateTime pubDate, String slug) {
 		Page p = new Page(System.currentTimeMillis(),
+				2354902341413l,
 				"author dude",
 				"title dude",
 				"keywords,bro",

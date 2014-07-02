@@ -3,6 +3,9 @@ package com.tingleff.yassg.pagedb.file;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,8 +81,15 @@ public class FilePageDB implements PageDB {
 				for (String v : vals)
 					tags.add(v);
 			}
+			String pageIdString = props.getProperty("id");
+			long pageId = 0;
+			if (pageIdString == null)
+				pageId = generatePageId(props.getProperty("href"));
+			else
+				pageId = new BigInteger(pageIdString, 16).longValue();
 			Page p = new Page(
 					modified,
+					pageId,
 					props.getProperty("author"),
 					props.getProperty("title"),
 					props.getProperty("keywords"),
@@ -92,6 +102,18 @@ public class FilePageDB implements PageDB {
 		} finally {
 			fis.close();
 		}
+	}
+
+	private long generatePageId(String href) {
+		try {
+		MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+		sha1.update(href.getBytes());
+		byte[] bytes = sha1.digest();
+		BigInteger bi = new BigInteger(bytes);
+		return bi.longValue();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("damn you java");
+		} finally { }
 	}
 
 	private String readFile(File path) throws IOException {

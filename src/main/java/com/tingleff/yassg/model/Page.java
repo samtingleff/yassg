@@ -8,6 +8,8 @@ public class Page {
 
 	private long modified;
 
+	private long id;
+
 	private String author;
 
 	private String title;
@@ -25,6 +27,7 @@ public class Page {
 	private String body;
 
 	public Page(long modified,
+			long id,
 			String author,
 			String title,
 			String keywords,
@@ -34,6 +37,7 @@ public class Page {
 			DateTime pubDate,
 			String body) {
 		this.modified = modified;
+		this.id = id;
 		this.author = author;
 		this.title = title;
 		this.keywords = keywords;
@@ -49,6 +53,10 @@ public class Page {
 
 	public long getModified() {
 		return modified;
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	public String getAuthor() {

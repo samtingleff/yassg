@@ -1,7 +1,6 @@
 package com.tingleff.yassg.content;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -47,6 +46,7 @@ public class ContentDBTestCase {
 
 	private Page createPage(DateTime pubDate) {
 		Page p = new Page(System.currentTimeMillis(),
+				104391493145l,
 				"author dude",
 				"title dude",
 				"keywords,bro",
