@@ -17,6 +17,12 @@ Flickr
 14521186741
 %%%
 
+# Yet Another Static Site Generator #
+
+This is Yet Another Static Site Generator. There are many of them, but this one is mine.
+
+You will probably have no interest or desire to use it.
+
 # Components #
 
 PageDB: responsible for reading in page metadata and raw body contents.
