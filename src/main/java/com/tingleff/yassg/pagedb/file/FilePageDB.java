@@ -81,12 +81,7 @@ public class FilePageDB implements PageDB {
 				for (String v : vals)
 					tags.add(v);
 			}
-			String pageIdString = props.getProperty("id");
-			long pageId = 0;
-			if (pageIdString == null)
-				pageId = generatePageId(props.getProperty("href"));
-			else
-				pageId = new BigInteger(pageIdString, 16).longValue();
+			long pageId = generatePageId(props.getProperty("href"));;
 			Page p = new Page(
 					modified,
 					pageId,
