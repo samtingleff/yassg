@@ -22,6 +22,8 @@ public class Page {
 
 	private String href;
 
+	private boolean noindex;
+
 	private DateTime pubDate;
 
 	private String body;
@@ -34,6 +36,7 @@ public class Page {
 			String description,
 			Set<String> tags,
 			String href,
+			boolean noindex,
 			DateTime pubDate,
 			String body) {
 		this.modified = modified;
@@ -44,6 +47,7 @@ public class Page {
 		this.description = description;
 		this.tags = tags;
 		this.href = href;
+		this.noindex = noindex;
 		this.pubDate = pubDate;
 		this.body = body;
 	}
@@ -81,6 +85,10 @@ public class Page {
 
 	public String getHref() {
 		return href;
+	}
+
+	public boolean getNoindex() {
+		return noindex;
 	}
 
 	public DateTime getPubDate() {

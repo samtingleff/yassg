@@ -20,31 +20,31 @@ public class ContentDBTestCase {
 	@Test
 	public void index() {
 		List<Page> pages = Arrays.asList(
-				createPage(new DateTime(2900, 1, 13, 7, 11)),
-				createPage(new DateTime(2014, 2, 11, 7, 11)),
-				createPage(new DateTime(2014, 6, 13, 7, 11)),
-				createPage(new DateTime(2013, 3, 13, 7, 11)),
-				createPage(new DateTime(2011, 8, 29, 12, 11)),
-				createPage(new DateTime(2014, 4, 30, 22, 19)));
+				createPage(new DateTime(2900, 1, 13, 7, 11), false),
+				createPage(new DateTime(2014, 2, 11, 7, 11), false),
+				createPage(new DateTime(2014, 6, 13, 7, 11), false),
+				createPage(new DateTime(2013, 3, 13, 7, 11), false),
+				createPage(new DateTime(2011, 8, 29, 12, 11), false),
+				createPage(new DateTime(2014, 4, 30, 22, 19), true));
 		contentdb.addAll(pages);
 
-		List<Page> pc = contentdb.recent(10);
+		List<Page> pc = contentdb.index(10);
 		Assert.assertNotNull(pc);
-		Assert.assertEquals(5, pc.size());
+		// items in the future, or with noindex=true should be excluded
+		Assert.assertEquals(4, pc.size());
 		Assert.assertEquals(pages.get(2), pc.get(0));
-		Assert.assertEquals(pages.get(5), pc.get(1));
-		Assert.assertEquals(pages.get(1), pc.get(2));
-		Assert.assertEquals(pages.get(3), pc.get(3));
-		Assert.assertEquals(pages.get(4), pc.get(4));
+		Assert.assertEquals(pages.get(1), pc.get(1));
+		Assert.assertEquals(pages.get(3), pc.get(2));
+		Assert.assertEquals(pages.get(4), pc.get(3));
 
-		pc = contentdb.recent(2);
+		pc = contentdb.index(2);
 		Assert.assertNotNull(pc);
 		Assert.assertEquals(2, pc.size());
 		Assert.assertEquals(pages.get(2), pc.get(0));
-		Assert.assertEquals(pages.get(5), pc.get(1));
+		Assert.assertEquals(pages.get(1), pc.get(1));
 	}
 
-	private Page createPage(DateTime pubDate) {
+	private Page createPage(DateTime pubDate, boolean noindex) {
 		Page p = new Page(System.currentTimeMillis(),
 				104391493145l,
 				"author dude",
@@ -53,6 +53,7 @@ public class ContentDBTestCase {
 				"description dude",
 				new HashSet<String>(Arrays.asList("tag1", "tag2", "tag3")),
 				"slug-dude",
+				noindex,
 				pubDate,
 				"body here");
 		return p;

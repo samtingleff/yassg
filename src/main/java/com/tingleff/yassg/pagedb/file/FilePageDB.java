@@ -81,7 +81,8 @@ public class FilePageDB implements PageDB {
 				for (String v : vals)
 					tags.add(v);
 			}
-			long pageId = generatePageId(props.getProperty("href"));;
+			long pageId = generatePageId(props.getProperty("href"));
+			boolean noindex = Boolean.parseBoolean(props.getProperty("noindex"));
 			Page p = new Page(
 					modified,
 					pageId,
@@ -91,6 +92,7 @@ public class FilePageDB implements PageDB {
 					props.getProperty("description"),
 					tags,
 					props.getProperty("href"),
+					noindex,
 					new DateTime(df.parse(props.getProperty("pubDate"))),
 					body);
 			return p;

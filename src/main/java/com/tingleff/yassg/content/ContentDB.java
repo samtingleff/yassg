@@ -27,12 +27,14 @@ public class ContentDB implements Iterable<Page> {
 			addPage(p);
 	}
 
-	public List<Page> recent(int count) {
+	public List<Page> index(int count) {
 		// return first n items where pub date is before now
 		DateTime now = new DateTime();
 		List<Page> results = new ArrayList<Page>(count);
 		for (Page p : pages) {
 			if (p.getPubDate().isAfter(now))
+				continue;
+			if (p.getNoindex())
 				continue;
 			if (results.size() >= count)
 				break;

@@ -44,6 +44,7 @@ public class ContentFileWriterTestCase {
 				"description dude",
 				new HashSet<String>(Arrays.asList("tag1", "tag2", "tag3")),
 				slug,
+				false,
 				pubDate,
 				"body here");
 		return p;

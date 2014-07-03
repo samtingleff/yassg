@@ -101,7 +101,7 @@ public class Main {
 
 	private void writeIndex() throws IOException {
 		Date now = new Date();
-		List<Page> pages = contentdb.recent(indexCount);
+		List<Page> pages = contentdb.index(indexCount);
 		List<RenderedPage> rendered = new ArrayList<RenderedPage>(pages.size());
 		for (Page p : pages) {
 			rendered.add(render(p));
@@ -115,7 +115,7 @@ public class Main {
 
 	private void writeRSS() throws IOException {
 		Date now = new Date();
-		List<Page> pages = contentdb.recent(indexCount);
+		List<Page> pages = contentdb.index(indexCount);
 		List<RenderedPage> rendered = new ArrayList<RenderedPage>(pages.size());
 		for (Page p : pages) {
 			rendered.add(render(p));
@@ -129,7 +129,7 @@ public class Main {
 
 	private void writeAtom() throws IOException {
 		Date now = new Date();
-		List<Page> pages = contentdb.recent(indexCount);
+		List<Page> pages = contentdb.index(indexCount);
 		List<RenderedPage> rendered = new ArrayList<RenderedPage>(pages.size());
 		for (Page p : pages) {
 			rendered.add(render(p));
