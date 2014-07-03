@@ -152,7 +152,7 @@ public class Main {
 
 	private void writeStaticContent() throws Exception {
 		Rsync rsync = new RsyncCommand();
-		rsync.rsync(new File(staticDir), new File(outputDir, "static"), verbose, true);
+		rsync.rsync(new File(staticDir), new File(outputDir), verbose, false);
 	}
 
 	private RenderedPage render(Page p) throws IOException {
