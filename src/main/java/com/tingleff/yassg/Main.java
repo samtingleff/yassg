@@ -37,7 +37,7 @@ public class Main {
 
 	private static DateFormat htmlDateFormat = new SimpleDateFormat("EEEEE, MMMMM dd @ HH:mm");
 
-	private static DateFormat htmlDateFormatShort = new SimpleDateFormat("MMM dd");
+	private static DateFormat htmlDateFormatShort = new SimpleDateFormat("MMM dd, yyyy");
 
 	// Fri, 21 Dec 2012 10:00:01 GMT
 	private static DateFormat rssDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
