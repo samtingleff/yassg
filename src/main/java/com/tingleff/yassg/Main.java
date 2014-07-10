@@ -1,6 +1,5 @@
 package com.tingleff.yassg;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,8 +22,6 @@ import com.tingleff.yassg.model.Page;
 import com.tingleff.yassg.model.RenderedPage;
 import com.tingleff.yassg.pagedb.PageDB;
 import com.tingleff.yassg.pagedb.file.FilePageDB;
-import com.tingleff.yassg.rsync.Rsync;
-import com.tingleff.yassg.rsync.RsyncCommand;
 import com.tingleff.yassg.writer.ContentFileWriter;
 
 public class Main {
@@ -47,9 +44,6 @@ public class Main {
 
 	@Parameter(names = "-templates", required = true)
 	private String templateDir;
-
-	@Parameter(names = "-static", required = true)
-	private String staticDir;
 
 	@Parameter(names = "-output", required = true)
 	private String outputDir;
@@ -94,9 +88,6 @@ public class Main {
 
 		// write out /atom.xml
 		writeAtom();
-
-		// write out static
-		writeStaticContent();
 	}
 
 	private void writeIndex() throws IOException {
@@ -148,11 +139,6 @@ public class Main {
 		ti.put("page", render(page));
 		String body = ti.render();
 		writer.writePage(page, body);
-	}
-
-	private void writeStaticContent() throws Exception {
-		Rsync rsync = new RsyncCommand();
-		rsync.rsync(new File(staticDir), new File(outputDir), verbose, false);
 	}
 
 	private RenderedPage render(Page p) throws IOException {

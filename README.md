@@ -1,7 +1,7 @@
 # Goal #
 
 Build it: mvn clean compile assembly:single
-Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -static static/  -output output/
+Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -output output/
 Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
 
 # Inputs #
@@ -36,8 +36,6 @@ ContentDB: understands "blogging" as a data model
 TemplateEngine: responsible for converting from a source format (markdown) to a destination format (html).
 
 ContentWriter: writes Page objects to an output destination
-
-Rsync: rsync from static/ to output/static/
 
 # Future Directions #
 
