@@ -17,6 +17,12 @@ Flickr
 14521186741
 %%%
 
+SoundCloud
+
+%%% soundcloud
+158208762
+%%%
+
 # Yet Another Static Site Generator #
 
 This is Yet Another Static Site Generator. There are many of them, but this one is mine.
