@@ -14,25 +14,28 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 
 # Markdown Plugins #
 
-Flickr
+## Flickr ##
 
+```
 %%% flickr username=samtingleff width=500 height=350
 14521186741
 %%%
+```
 
-SoundCloud
+## SoundCloud ##
 
+```
 %%% soundcloud
 158208762
 %%%
+```
 
 # Usage #
 
 See [my own blog](https://github.com/samtingleff/blog) for an example project.
 
-# Future Directions #
+# Future #
 
-- Build a search index (how to serve statically?)
-- Do something with tags?
+- Build a search index for client-side search
 - Suggestions of related content
-
+- Do something with tags
