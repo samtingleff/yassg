@@ -8,9 +8,9 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 
 # Using It #
 
-Build it: mvn clean compile assembly:single
-Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -output output/
-Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
+* Build it: mvn clean compile assembly:single
+* Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -output output/
+* Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
 
 # Markdown Plugins #
 
@@ -25,6 +25,10 @@ SoundCloud
 %%% soundcloud
 158208762
 %%%
+
+# Usage #
+
+See [my own blog](https://github.com/samtingleff/blog) for an example project.
 
 # Future Directions #
 
