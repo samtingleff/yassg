@@ -7,7 +7,6 @@ import java.util.Set;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
@@ -51,7 +50,7 @@ public class LuceneIndexService implements IndexService {
 
 	public void indexPage(Page page) throws IOException {
 		Document doc = new Document();
-		doc.add(new LongField("id", page.getId(), Field.Store.YES));
+		doc.add(new StringField("id",Long.toHexString(page.getId()), Field.Store.YES));
 		doc.add(new TextField("author", page.getAuthor(), Field.Store.YES));
 		doc.add(new TextField("title", page.getTitle(), Field.Store.YES));
 		doc.add(new TextField("keywords", page.getKeywords(), Field.Store.YES));
