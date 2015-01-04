@@ -61,7 +61,7 @@ public class LuceneIndexService implements IndexService {
 			doc.add(new StringField("tag", tag, Field.Store.YES));
 		}
 		doc.add(new StringField("href", page.getHref(), Field.Store.YES));
-		doc.add(new LongField("date", Long.parseLong(page.getPubDate().toString(dtf)), Field.Store.YES));
+		doc.add(new StringField("date", page.getPubDate().toString(dtf), Field.Store.YES));
 		doc.add(new TextField("body", page.getBody(), Field.Store.NO));
 		writer.addDocument(doc);
 	}
