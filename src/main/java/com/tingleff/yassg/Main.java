@@ -18,6 +18,8 @@ import com.tingleff.yassg.formats.TemplateEngine;
 import com.tingleff.yassg.formats.TemplateInstance;
 import com.tingleff.yassg.formats.mk.MarkdownTemplateEngine;
 import com.tingleff.yassg.formats.st4.StringTemplate4Engine;
+import com.tingleff.yassg.index.IndexService;
+import com.tingleff.yassg.index.lucene.LuceneIndexService;
 import com.tingleff.yassg.model.Page;
 import com.tingleff.yassg.model.RenderedPage;
 import com.tingleff.yassg.pagedb.PageDB;
@@ -48,6 +50,9 @@ public class Main {
 	@Parameter(names = "-output", required = true)
 	private String outputDir;
 
+	@Parameter(names = "-index", required = true)
+	private String indexDir;
+
 	@Parameter(names = "-verbose")
 	private boolean verbose = false;
 
@@ -64,12 +69,16 @@ public class Main {
 
 	private ContentFileWriter writer;
 
+	private IndexService indexService;
+
 	public void run() throws Exception {
 		pagedb = new FilePageDB(contentDir);
 		contentdb = new ContentDB();
 		pageTemplateEngine = new StringTemplate4Engine(templateDir);
 		bodyTemplateEngine = new MarkdownTemplateEngine();
 		writer = new ContentFileWriter(outputDir);
+		indexService = new LuceneIndexService(indexDir);
+		indexService.open();
 
 		// iterate through pages
 		//  - add each to content db
@@ -78,7 +87,9 @@ public class Main {
 		for (Page page : iter) {
 			contentdb.addPage(page);
 			writePage(page);
+			indexPage(page);
 		}
+		indexService.close();
 
 		// write out /index.html
 		writeIndex();
@@ -158,6 +169,10 @@ public class Main {
 				p.getHref(),
 				renderedBody);
 		return r;
+	}
+
+	private void indexPage(Page p) throws IOException {
+		indexService.indexPage(p);
 	}
 
 	private String getId(Page p, String body) {
