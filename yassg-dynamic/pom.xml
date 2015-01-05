@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.tingleff.yassg</groupId>
+        <artifactId>yassg</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>yassg-dynamic</artifactId>
+    <packaging>jar</packaging>
+    <name>yassg-dynamic</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.10.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>4.10.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>4.10.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.tingleff.yassg.search.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>
+        									org.apache.maven.plugins
+        								</groupId>
+        								<artifactId>
+        									maven-antrun-plugin
+        								</artifactId>
+        								<versionRange>
+        									[1.3,)
+        								</versionRange>
+        								<goals>
+        									<goal>run</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<ignore></ignore>
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>profile-thrift-builder</id>
+            <activation>
+                <file>
+                    <exists>/usr/local/bin/thrift</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                 <id>generate-sources</id>
+                                 <phase>generate-sources</phase>
+                                 <configuration>
+                                     <tasks>
+                                         <mkdir dir="target/generated-sources"/>
+                                         <delete>
+                                             <fileset dir="target/generated-sources" includes="**/*"/>
+                                         </delete>
+                                         <exec executable="/usr/local/bin/thrift">
+                                             <arg value="--gen"/>
+                                             <arg value="java:beans,hashcode"/>
+                                             <arg value="-o"/>
+                                             <arg value="target/generated-sources"/>
+                                             <arg value="src/main/thrift/types.thrift"/>
+                                         </exec>
+                                         <exec executable="/usr/local/bin/thrift">
+                                             <arg value="--gen"/>
+                                             <arg value="py"/>
+                                             <arg value="-o"/>
+                                             <arg value="target/generated-sources"/>
+                                             <arg value="src/main/thrift/types.thrift"/>
+                                         </exec>
+                                         <delete>
+						 <fileset dir="src/main/java/com/tingleff/yassg/search/types" includes="**/*"/>
+                                         </delete>
+					 <copy todir="src/main/java/com/tingleff/yassg/search/types">
+						 <fileset dir="target/generated-sources/gen-javabean/com/tingleff/yassg/search/types"/>
+                                         </copy>
+					 <copy todir="src/main/py">
+						 <fileset dir="target/generated-sources/gen-py"/>
+                                         </copy>
+                                     </tasks>
+                                 </configuration>
+                                 <goals>
+                                     <goal>run</goal>
+                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+</project>
