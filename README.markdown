@@ -32,7 +32,7 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 
 # Usage #
 
-See [my own blog](https://github.com/samtingleff/blog) for an example project.
+See [my own blog](http:///sam.tingleff.com/) for an example project.
 
 # Future #
 
