@@ -8,9 +8,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>yassg-dynamic</artifactId>
+    <artifactId>yassg-search</artifactId>
     <packaging>jar</packaging>
-    <name>yassg-dynamic</name>
+    <name>yassg-search</name>
 
     <dependencies>
         <dependency>
