@@ -3,6 +3,7 @@ package com.tingleff.yassg.index;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -33,7 +34,7 @@ public class LuceneIndexServiceTestCase {
 	private String indexDirectory = "src/test/tmp";
 
 	private String[] searchFields = new String[] {
-			"id", "author", "title", "keywords", "description", "tag", "href", "date", "body"
+			"id", "author", "title", "keywords", "description", "tag", "href", "date", "body", "flavor"
 	};
 
 	private IndexService index;
@@ -47,7 +48,7 @@ public class LuceneIndexServiceTestCase {
 	private MultiFieldQueryParser parser;
 
 	@Test
-	public void testPageSearch() throws IOException, ParseException {
+	public void testPageSearch1() throws IOException, ParseException {
 		Page p1 = createPage(new DateTime(), true);
 		index.indexPage(p1);
 
@@ -55,6 +56,20 @@ public class LuceneIndexServiceTestCase {
 		openReader();
 		// search for it
 		Query q = parser.parse("gigabytes AND tag:compsci");
+		TopDocs topDocs = searcher.search(q, 10);
+		ScoreDoc[] hits = topDocs.scoreDocs;
+		Assert.assertEquals(1, hits.length);
+	}
+
+	@Test
+	public void testPageSearch2() throws IOException, ParseException {
+		Page p2 = createPage(new DateTime(), true);
+		index.indexPage(p2);
+
+		((LuceneIndexService) index).commit();
+		openReader();
+		// search for it
+		Query q = parser.parse("flavor:lime");
 		TopDocs topDocs = searcher.search(q, 10);
 		ScoreDoc[] hits = topDocs.scoreDocs;
 		Assert.assertEquals(1, hits.length);
@@ -86,7 +101,12 @@ public class LuceneIndexServiceTestCase {
 				"slug-dude",
 				noindex,
 				pubDate,
-				"body here");
+				"body here",
+				new HashMap<String, String>() {
+					{
+						put("flavor", "lime");
+					}
+		});
 		return p;
 	}
 

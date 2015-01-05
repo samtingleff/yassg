@@ -148,6 +148,7 @@ public class Main {
 			return;
 		TemplateInstance ti = pageTemplateEngine.parse("post");
 		ti.put("page", render(page));
+		ti.put("attr", page.getAttributes());
 		String body = ti.render();
 		writer.writePage(page, body);
 	}

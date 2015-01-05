@@ -2,6 +2,7 @@ package com.tingleff.yassg.index.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -62,6 +63,9 @@ public class LuceneIndexService implements IndexService {
 		doc.add(new StringField("href", page.getHref(), Field.Store.YES));
 		doc.add(new StringField("date", page.getPubDate().toString(dtf), Field.Store.YES));
 		doc.add(new TextField("body", page.getBody(), Field.Store.NO));
+		for (Map.Entry<String, String> e : page.getAttributes().entrySet()) {
+			doc.add(new StringField(e.getKey(), e.getValue(), Field.Store.YES));
+		}
 		writer.addDocument(doc);
 	}
 

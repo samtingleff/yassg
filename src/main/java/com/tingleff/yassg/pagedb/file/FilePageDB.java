@@ -9,8 +9,13 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -83,6 +88,13 @@ public class FilePageDB implements PageDB {
 			}
 			long pageId = generatePageId(props.getProperty("href"));
 			boolean noindex = Boolean.parseBoolean(props.getProperty("noindex"));
+			Map<String, String> attributes = new HashMap<String, String>();
+			Enumeration e = props.propertyNames();
+			while (e.hasMoreElements()) {
+				String key = (String) e.nextElement();
+				String val = props.getProperty(key);
+				attributes.put(key, val);
+			}
 			Page p = new Page(
 					modified,
 					pageId,
@@ -94,7 +106,8 @@ public class FilePageDB implements PageDB {
 					props.getProperty("href"),
 					noindex,
 					new DateTime(df.parse(props.getProperty("pubDate"))),
-					body);
+					body,
+					attributes);
 			return p;
 		} finally {
 			fis.close();

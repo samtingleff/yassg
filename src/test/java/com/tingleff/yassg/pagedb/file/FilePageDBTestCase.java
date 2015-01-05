@@ -33,6 +33,7 @@ public class FilePageDBTestCase {
 		Assert.assertEquals(new DateTime(2014, 6, 17, 11, 13), page.getPubDate());
 		Assert.assertEquals(new HashSet<String>(Arrays.asList("tag1", "tag2", "tag3")), page.getTags());
 		Assert.assertEquals("This is a paragraph.\n", page.getBody());
+		Assert.assertEquals("magenta", page.attribute("color"));
 	}
 
 	@Test

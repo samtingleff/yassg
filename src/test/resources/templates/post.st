@@ -5,6 +5,8 @@
  <body>
   $page.body$
 
+  $attr.("color")$
+
   $footer()$
 
  </body>
