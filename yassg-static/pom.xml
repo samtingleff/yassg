@@ -44,6 +44,11 @@
             <version>4.10.3</version>
         </dependency>
         <dependency>
+            <groupId>com.likethecolor</groupId>
+            <artifactId>alchemy</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.9</version>
