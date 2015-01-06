@@ -2,6 +2,8 @@ package com.tingleff.yassg.index.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,10 +22,20 @@ import org.joda.time.format.DateTimeFormatter;
 
 import com.tingleff.yassg.index.IndexService;
 import com.tingleff.yassg.model.Page;
+import com.tingleff.yassg.semantic.NamedEntity;
 
 public class LuceneIndexService implements IndexService {
 
-	private DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMddHHmm");
+	private static final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMddHHmm");
+
+	// A subset from http://www.alchemyapi.com/api/entity/types/
+	private static final Set<String> indexedTypes = new HashSet<String>(Arrays.asList(
+			"Company",
+			"Country",
+			"FieldTerminology",
+			"Organization",
+			"Person",
+			"Technology"));
 
 	private String indexDirectory;
 
@@ -51,6 +63,22 @@ public class LuceneIndexService implements IndexService {
 
 	public void indexPage(Page page) throws IOException {
 		Document doc = new Document();
+		decorate(doc, page);
+		writer.addDocument(doc);
+	}
+
+	public void indexPage(Page page, Iterable<NamedEntity> entities) throws IOException {
+		Document doc = new Document();
+		decorate(doc, page);
+		decorate(doc, entities);
+		writer.addDocument(doc);
+	}
+
+	public void commit() throws IOException {
+		writer.commit();
+	}
+
+	private Document decorate(Document doc, Page page) {
 		doc.add(new StringField("id",Long.toHexString(page.getId()), Field.Store.YES));
 		doc.add(new TextField("author", page.getAuthor(), Field.Store.YES));
 		doc.add(new TextField("title", page.getTitle(), Field.Store.YES));
@@ -66,10 +94,15 @@ public class LuceneIndexService implements IndexService {
 		for (Map.Entry<String, String> e : page.getAttributes().entrySet()) {
 			doc.add(new StringField(e.getKey(), e.getValue(), Field.Store.YES));
 		}
-		writer.addDocument(doc);
+		return doc;
 	}
 
-	public void commit() throws IOException {
-		writer.commit();
+	private void decorate(Document doc, Iterable<NamedEntity> entities) {
+		for (NamedEntity ne : entities) {
+			String type = ne.getType();
+			if (indexedTypes.contains(type)) {
+				doc.add(new TextField(ne.getType().toLowerCase(), ne.getText(), Field.Store.YES));
+			}
+		}
 	}
 }

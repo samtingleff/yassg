@@ -6,10 +6,15 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -24,6 +29,10 @@ import com.tingleff.yassg.model.Page;
 import com.tingleff.yassg.model.RenderedPage;
 import com.tingleff.yassg.pagedb.PageDB;
 import com.tingleff.yassg.pagedb.file.FilePageDB;
+import com.tingleff.yassg.semantic.AlchemyAPISemanticClient;
+import com.tingleff.yassg.semantic.NamedEntity;
+import com.tingleff.yassg.semantic.NamedEntityResponse;
+import com.tingleff.yassg.semantic.SemanticClient;
 import com.tingleff.yassg.writer.ContentFileWriter;
 
 public class Main {
@@ -53,6 +62,12 @@ public class Main {
 	@Parameter(names = "-index", required = true)
 	private String indexDir;
 
+	@Parameter(names = "-alchemyKey", required = false)
+	private String alchemyAPIKey;
+
+	@Parameter(names = "-alchemyCache", required = false)
+	private String alchemyCacheDir;
+
 	@Parameter(names = "-verbose")
 	private boolean verbose = false;
 
@@ -69,6 +84,8 @@ public class Main {
 
 	private ContentFileWriter writer;
 
+	private SemanticClient semanticClient;
+
 	private IndexService indexService;
 
 	public void run() throws Exception {
@@ -77,6 +94,7 @@ public class Main {
 		pageTemplateEngine = new StringTemplate4Engine(templateDir);
 		bodyTemplateEngine = new MarkdownTemplateEngine();
 		writer = new ContentFileWriter(outputDir);
+		semanticClient = new AlchemyAPISemanticClient(alchemyAPIKey, alchemyCacheDir).init();
 		indexService = new LuceneIndexService(indexDir);
 		indexService.open();
 
@@ -146,8 +164,9 @@ public class Main {
 	private void writePage(Page page) throws IOException {
 		if (!writer.shouldWritePage(page))
 			return;
+		RenderedPage renderedPage = render(page);
 		TemplateInstance ti = pageTemplateEngine.parse("post");
-		ti.put("page", render(page));
+		ti.put("page", renderedPage);
 		ti.put("attr", page.getAttributes());
 		String body = ti.render();
 		writer.writePage(page, body);
@@ -173,7 +192,37 @@ public class Main {
 	}
 
 	private void indexPage(Page p) throws IOException {
-		indexService.indexPage(p);
+		RenderedPage renderedPage = render(p);
+
+		// extract links
+		String htmlBody = renderedPage.getBody();
+		Document doc = Jsoup.parseBodyFragment(htmlBody);
+		Element body = doc.body();
+		List<Element> links = body.getElementsByTag("a");
+		List<String> urls = new ArrayList<String>(links.size());
+		for (Element link : links) {
+			String nofollow = link.attr("rel");
+			if ((nofollow == null) || (!"nofollow".equals(nofollow))) {
+				String href = link.attr("href");
+				if ((href != null) && (href.startsWith("http")))
+					urls.add(link.attr("href"));
+			}
+		}
+
+		// send to semantic client
+		List<NamedEntity> entities = new LinkedList<NamedEntity>();
+		for (String url : urls) {
+			NamedEntityResponse response = null;
+			try {
+				response = semanticClient.namedEntities(url);
+				for (NamedEntity ne : response) {
+					entities.add(ne);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		indexService.indexPage(p, entities);
 	}
 
 	private String getId(Page p, String body) {

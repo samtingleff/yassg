@@ -40,7 +40,7 @@ public class AlchemyAPISemanticClient implements SemanticClient {
 	public AlchemyAPISemanticClient() {
 	}
 
-	public void init() {
+	public AlchemyAPISemanticClient init() {
 		this.cache = new EntityResponseCache(this.cacheDir);
 		this.client = new Client(this.apiKey);
 		namedEntityParams = new NamedEntityParams();
@@ -50,6 +50,7 @@ public class AlchemyAPISemanticClient implements SemanticClient {
 	    namedEntityParams.setIsQuotations(true);
 	    namedEntityParams.setIsSentiment(true);
 	    namedEntityParams.setIsShowSourceText(true);
+	    return this;
 	}
 
 	public NamedEntityResponse namedEntities(String url) throws IOException {
