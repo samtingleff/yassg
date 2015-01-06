@@ -13,9 +13,23 @@ public class Main {
 		m.run();
 	}
 
-	// should match LuceneIndexService in yassg project
+	// should match LuceneIndexService in yassg-static
 	private static String[] defaultSearchFields = new String[] {
-			"id", "author", "title", "keywords", "description", "tag", "href", "date", "body"
+			"id",
+			"author",
+			"title",
+			"keywords",
+			"description",
+			"tag",
+			"href",
+			"date",
+			"body",
+			"company",
+			"country",
+			"fieldterminology",
+			"organization",
+			"person",
+			"technology"
 	};
 
 	@Parameter(names = "-dir", description = "Index directory", required = true)
