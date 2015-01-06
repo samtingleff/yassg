@@ -92,7 +92,9 @@ public class LuceneIndexService implements IndexService {
 		doc.add(new StringField("date", page.getPubDate().toString(dtf), Field.Store.YES));
 		doc.add(new TextField("body", page.getBody(), Field.Store.NO));
 		for (Map.Entry<String, String> e : page.getAttributes().entrySet()) {
-			doc.add(new StringField(e.getKey(), e.getValue(), Field.Store.YES));
+			String val = doc.get(e.getKey());
+			if (val == null)
+				doc.add(new StringField(e.getKey(), e.getValue(), Field.Store.YES));
 		}
 		return doc;
 	}
