@@ -1,7 +1,6 @@
 package com.tingleff.yassg.semantic;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
 public class NamedEntity implements Serializable {
