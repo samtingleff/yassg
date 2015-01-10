@@ -55,29 +55,45 @@ public class AlchemyAPISemanticClient implements SemanticClient {
 
 	public NamedEntityResponse namedEntities(String url) throws IOException {
 		NamedEntityResponse result = cache.lookup(url);
-		if (result != null)
-			return result;
+		if (result != null) {
+			if (!result.isSuccess()) {
+				long now = System.currentTimeMillis();
+				if ((now - result.getTimestamp()) < (1000l * 60l * 60l * 24l)) {
+					// do not try again for 24 hours
+					return result;
+				}
+			} else {
+				return result;
+			}
+		}
 
 		AbstractCall<NamedEntityAlchemyEntity> rankedNamedEntitiesCall = new RankedNamedEntitiesCall(new CallTypeUrl(url), namedEntityParams);
-	    Response<NamedEntityAlchemyEntity> rankedNamedEntitiesResponse = client.call(rankedNamedEntitiesCall);
-	    Iterator<NamedEntityAlchemyEntity> iter = rankedNamedEntitiesResponse.iterator();
-	    result = new NamedEntityResponse();
-		while (iter.hasNext()) {
-			NamedEntityAlchemyEntity entity = iter.next();
-			List<String> subtypes = new ArrayList<String>(entity.getSubtypeSize());
-			Iterator<String> subtypeIterator = entity.subtypeIterator();
-			while (subtypeIterator.hasNext()) {
-				String s = subtypeIterator.next();
-				subtypes.add(s);
+		try {
+			Response<NamedEntityAlchemyEntity> rankedNamedEntitiesResponse = client
+					.call(rankedNamedEntitiesCall);
+			Iterator<NamedEntityAlchemyEntity> iter = rankedNamedEntitiesResponse
+					.iterator();
+			result = new NamedEntityResponse();
+			while (iter.hasNext()) {
+				NamedEntityAlchemyEntity entity = iter.next();
+				List<String> subtypes = new ArrayList<String>(
+						entity.getSubtypeSize());
+				Iterator<String> subtypeIterator = entity.subtypeIterator();
+				while (subtypeIterator.hasNext()) {
+					String s = subtypeIterator.next();
+					subtypes.add(s);
+				}
+				NamedEntity ne = new NamedEntity(entity.getCount(),
+						entity.getType(), entity.getText(), entity.getScore()
+								.doubleValue(), subtypes);
+				result.add(ne);
 			}
-			NamedEntity ne = new NamedEntity(entity.getCount(),
-					entity.getType(),
-					entity.getText(),
-					entity.getScore().doubleValue(),
-					subtypes);
-			result.add(ne);
+			cache.save(url, result);
+		} catch (IOException e) {
+			NamedEntityResponse failureResponse = new NamedEntityResponse(
+					false, System.currentTimeMillis());
+			cache.save(url, failureResponse);
 		}
-	    cache.save(url, result);
 	    return result;
 	}
 
