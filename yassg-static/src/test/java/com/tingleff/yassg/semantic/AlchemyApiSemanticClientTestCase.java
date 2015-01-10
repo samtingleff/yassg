@@ -1,9 +1,14 @@
 package com.tingleff.yassg.semantic;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -20,6 +25,7 @@ public class AlchemyApiSemanticClientTestCase {
 	@Test
 	public void testSimple() throws IOException {
 		NamedEntityResponse result = client.namedEntities("http://www.head-fi.org/t/701900/schiit-happened-the-story-of-the-worlds-most-improbable-start-up/1185");
+		Assert.assertTrue(result.isSuccess());
 		Assert.assertEquals(26, result.size());
 		// check two of them
 		NamedEntity e1 = result.get(0);
@@ -33,6 +39,26 @@ public class AlchemyApiSemanticClientTestCase {
 		Assert.assertEquals("Western Digital", e7.getText());
 		Assert.assertEquals(0.350372, e7.getScore(), 0.0d);
 		Assert.assertEquals(1, e7.getCount());
+	}
+
+	@Test
+	public void testSerialization() throws IOException, ClassNotFoundException {
+		long now = System.currentTimeMillis();
+		NamedEntityResponse ner = new NamedEntityResponse(false, now);
+		ner.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
+		byte[] bytes = serialize(ner);
+
+		NamedEntityResponse result = deserialize(bytes);
+		Assert.assertFalse(result.isSuccess());
+		Assert.assertEquals(now, result.getTimestamp());
+
+		ner = new NamedEntityResponse(true, 0l);
+		ner.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
+		bytes = serialize(ner);
+
+		result = deserialize(bytes);
+		Assert.assertTrue(result.isSuccess());
+		Assert.assertEquals(0l, result.getTimestamp());
 	}
 
 	@Before
@@ -52,5 +78,20 @@ public class AlchemyApiSemanticClientTestCase {
 				"src/test/tmp/entities");
 		client.init();
 		this.client = client;
+	}
+
+	private byte[] serialize(NamedEntityResponse ner) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(ner);
+			return baos.toByteArray();
+	}
+
+	private NamedEntityResponse deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+		ObjectInputStream ois = new ObjectInputStream(bais);
+		NamedEntityResponse ner = (NamedEntityResponse) ois.readObject();
+		ois.close();
+		return ner;
 	}
 }
