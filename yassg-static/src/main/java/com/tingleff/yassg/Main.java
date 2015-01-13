@@ -211,15 +211,17 @@ public class Main {
 
 		// send to semantic client
 		List<NamedEntity> entities = new LinkedList<NamedEntity>();
-		for (String url : urls) {
-			NamedEntityResponse response = null;
-			try {
-				response = semanticClient.namedEntities(url);
-				for (NamedEntity ne : response) {
-					entities.add(ne);
+		if (alchemyAPIKey != null) {
+			for (String url : urls) {
+				NamedEntityResponse response = null;
+				try {
+					response = semanticClient.namedEntities(url);
+					for (NamedEntity ne : response) {
+						entities.add(ne);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch(Exception e) {
-				e.printStackTrace();
 			}
 		}
 		indexService.indexPage(p, entities);
