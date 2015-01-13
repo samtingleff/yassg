@@ -94,7 +94,9 @@ public class Main {
 		pageTemplateEngine = new StringTemplate4Engine(templateDir);
 		bodyTemplateEngine = new MarkdownTemplateEngine();
 		writer = new ContentFileWriter(outputDir);
-		semanticClient = new AlchemyAPISemanticClient(alchemyAPIKey, alchemyCacheDir).init();
+		if (alchemyAPIKey != null) {
+			semanticClient = new AlchemyAPISemanticClient(alchemyAPIKey, alchemyCacheDir).init();
+		}
 		indexService = new LuceneIndexService(indexDir);
 		indexService.open();
 
