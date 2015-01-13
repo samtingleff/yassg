@@ -116,14 +116,15 @@ public class FilePageDB implements PageDB {
 
 	private long generatePageId(String href) {
 		try {
-		MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-		sha1.update(href.getBytes());
-		byte[] bytes = sha1.digest();
-		BigInteger bi = new BigInteger(bytes);
-		return bi.longValue();
+			MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+			sha1.update(href.getBytes());
+			byte[] bytes = sha1.digest();
+			BigInteger bi = new BigInteger(bytes);
+			return bi.longValue();
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException("damn you java");
-		} finally { }
+		} finally {
+		}
 	}
 
 	private String readFile(File path) throws IOException {
