@@ -29,6 +29,18 @@ public class SearchServiceHandler implements TSearchService.Iface {
 		}
 	}
 
+	@Override
+	public TSearchResult similar(int id, int n, TSort sorting)
+			throws TSearchException, TException {
+		try {
+			return backend.similar(id, n, sorting);
+		} catch (IOException e) {
+			// TODO: log me?
+			e.printStackTrace();
+			throw new TSearchException();
+		}
+	}
+
 	public void reopen() throws TSearchException {
 		try {
 			backend.reopen();

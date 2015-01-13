@@ -206,15 +206,18 @@ class TSort:
 class TSearchDoc:
   """
   Attributes:
+   - docId
    - fields
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.MAP, 'fields', (TType.STRING,None,TType.STRING,None), None, ), # 1
+    (1, TType.I32, 'docId', None, None, ), # 1
+    (2, TType.MAP, 'fields', (TType.STRING,None,TType.STRING,None), None, ), # 2
   )
 
-  def __init__(self, fields=None,):
+  def __init__(self, docId=None, fields=None,):
+    self.docId = docId
     self.fields = fields
 
   def read(self, iprot):
@@ -227,6 +230,11 @@ class TSearchDoc:
       if ftype == TType.STOP:
         break
       if fid == 1:
+        if ftype == TType.I32:
+          self.docId = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
         if ftype == TType.MAP:
           self.fields = {}
           (_ktype8, _vtype9, _size7 ) = iprot.readMapBegin()
@@ -247,8 +255,12 @@ class TSearchDoc:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('TSearchDoc')
+    if self.docId is not None:
+      oprot.writeFieldBegin('docId', TType.I32, 1)
+      oprot.writeI32(self.docId)
+      oprot.writeFieldEnd()
     if self.fields is not None:
-      oprot.writeFieldBegin('fields', TType.MAP, 1)
+      oprot.writeFieldBegin('fields', TType.MAP, 2)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.fields))
       for kiter14,viter15 in self.fields.items():
         oprot.writeString(kiter14)

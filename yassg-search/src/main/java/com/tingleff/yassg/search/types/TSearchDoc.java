@@ -36,7 +36,8 @@ import org.slf4j.LoggerFactory;
 public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDoc._Fields>, java.io.Serializable, Cloneable, Comparable<TSearchDoc> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TSearchDoc");
 
-  private static final org.apache.thrift.protocol.TField FIELDS_FIELD_DESC = new org.apache.thrift.protocol.TField("fields", org.apache.thrift.protocol.TType.MAP, (short)1);
+  private static final org.apache.thrift.protocol.TField DOC_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("docId", org.apache.thrift.protocol.TType.I32, (short)1);
+  private static final org.apache.thrift.protocol.TField FIELDS_FIELD_DESC = new org.apache.thrift.protocol.TField("fields", org.apache.thrift.protocol.TType.MAP, (short)2);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -44,11 +45,13 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
     schemes.put(TupleScheme.class, new TSearchDocTupleSchemeFactory());
   }
 
-  private Map<String,String> fields; // required
+  private int docId; // optional
+  private Map<String,String> fields; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    FIELDS((short)1, "fields");
+    DOC_ID((short)1, "docId"),
+    FIELDS((short)2, "fields");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -63,7 +66,9 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // FIELDS
+        case 1: // DOC_ID
+          return DOC_ID;
+        case 2: // FIELDS
           return FIELDS;
         default:
           return null;
@@ -105,10 +110,15 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
   }
 
   // isset id assignments
+  private static final int __DOCID_ISSET_ID = 0;
+  private byte __isset_bitfield = 0;
+  private _Fields optionals[] = {_Fields.DOC_ID,_Fields.FIELDS};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.FIELDS, new org.apache.thrift.meta_data.FieldMetaData("fields", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.DOC_ID, new org.apache.thrift.meta_data.FieldMetaData("docId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.FIELDS, new org.apache.thrift.meta_data.FieldMetaData("fields", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
@@ -119,17 +129,12 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
   public TSearchDoc() {
   }
 
-  public TSearchDoc(
-    Map<String,String> fields)
-  {
-    this();
-    this.fields = fields;
-  }
-
   /**
    * Performs a deep copy on <i>other</i>.
    */
   public TSearchDoc(TSearchDoc other) {
+    __isset_bitfield = other.__isset_bitfield;
+    this.docId = other.docId;
     if (other.isSetFields()) {
       Map<String,String> __this__fields = new HashMap<String,String>(other.fields);
       this.fields = __this__fields;
@@ -142,7 +147,31 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
 
   @Override
   public void clear() {
+    setDocIdIsSet(false);
+    this.docId = 0;
     this.fields = null;
+  }
+
+  public int getDocId() {
+    return this.docId;
+  }
+
+  public void setDocId(int docId) {
+    this.docId = docId;
+    setDocIdIsSet(true);
+  }
+
+  public void unsetDocId() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __DOCID_ISSET_ID);
+  }
+
+  /** Returns true if field docId is set (has been assigned a value) and false otherwise */
+  public boolean isSetDocId() {
+    return EncodingUtils.testBit(__isset_bitfield, __DOCID_ISSET_ID);
+  }
+
+  public void setDocIdIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __DOCID_ISSET_ID, value);
   }
 
   public int getFieldsSize() {
@@ -181,6 +210,14 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
+    case DOC_ID:
+      if (value == null) {
+        unsetDocId();
+      } else {
+        setDocId((Integer)value);
+      }
+      break;
+
     case FIELDS:
       if (value == null) {
         unsetFields();
@@ -194,6 +231,9 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
+    case DOC_ID:
+      return Integer.valueOf(getDocId());
+
     case FIELDS:
       return getFields();
 
@@ -208,6 +248,8 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
     }
 
     switch (field) {
+    case DOC_ID:
+      return isSetDocId();
     case FIELDS:
       return isSetFields();
     }
@@ -227,6 +269,15 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
     if (that == null)
       return false;
 
+    boolean this_present_docId = true && this.isSetDocId();
+    boolean that_present_docId = true && that.isSetDocId();
+    if (this_present_docId || that_present_docId) {
+      if (!(this_present_docId && that_present_docId))
+        return false;
+      if (this.docId != that.docId)
+        return false;
+    }
+
     boolean this_present_fields = true && this.isSetFields();
     boolean that_present_fields = true && that.isSetFields();
     if (this_present_fields || that_present_fields) {
@@ -242,6 +293,11 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
   @Override
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
+
+    boolean present_docId = true && (isSetDocId());
+    builder.append(present_docId);
+    if (present_docId)
+      builder.append(docId);
 
     boolean present_fields = true && (isSetFields());
     builder.append(present_fields);
@@ -259,6 +315,16 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
 
     int lastComparison = 0;
 
+    lastComparison = Boolean.valueOf(isSetDocId()).compareTo(other.isSetDocId());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetDocId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.docId, other.docId);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetFields()).compareTo(other.isSetFields());
     if (lastComparison != 0) {
       return lastComparison;
@@ -289,13 +355,21 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
     StringBuilder sb = new StringBuilder("TSearchDoc(");
     boolean first = true;
 
-    sb.append("fields:");
-    if (this.fields == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.fields);
+    if (isSetDocId()) {
+      sb.append("docId:");
+      sb.append(this.docId);
+      first = false;
     }
-    first = false;
+    if (isSetFields()) {
+      if (!first) sb.append(", ");
+      sb.append("fields:");
+      if (this.fields == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.fields);
+      }
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
@@ -315,6 +389,8 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
 
   private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
+      // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+      __isset_bitfield = 0;
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
       throw new java.io.IOException(te);
@@ -339,7 +415,15 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
           break;
         }
         switch (schemeField.id) {
-          case 1: // FIELDS
+          case 1: // DOC_ID
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.docId = iprot.readI32();
+              struct.setDocIdIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 2: // FIELDS
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
                 org.apache.thrift.protocol.TMap _map8 = iprot.readMapBegin();
@@ -372,18 +456,25 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.fields != null) {
-        oprot.writeFieldBegin(FIELDS_FIELD_DESC);
-        {
-          oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.fields.size()));
-          for (Map.Entry<String, String> _iter12 : struct.fields.entrySet())
-          {
-            oprot.writeString(_iter12.getKey());
-            oprot.writeString(_iter12.getValue());
-          }
-          oprot.writeMapEnd();
-        }
+      if (struct.isSetDocId()) {
+        oprot.writeFieldBegin(DOC_ID_FIELD_DESC);
+        oprot.writeI32(struct.docId);
         oprot.writeFieldEnd();
+      }
+      if (struct.fields != null) {
+        if (struct.isSetFields()) {
+          oprot.writeFieldBegin(FIELDS_FIELD_DESC);
+          {
+            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.fields.size()));
+            for (Map.Entry<String, String> _iter12 : struct.fields.entrySet())
+            {
+              oprot.writeString(_iter12.getKey());
+              oprot.writeString(_iter12.getValue());
+            }
+            oprot.writeMapEnd();
+          }
+          oprot.writeFieldEnd();
+        }
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -403,10 +494,16 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
     public void write(org.apache.thrift.protocol.TProtocol prot, TSearchDoc struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetFields()) {
+      if (struct.isSetDocId()) {
         optionals.set(0);
       }
-      oprot.writeBitSet(optionals, 1);
+      if (struct.isSetFields()) {
+        optionals.set(1);
+      }
+      oprot.writeBitSet(optionals, 2);
+      if (struct.isSetDocId()) {
+        oprot.writeI32(struct.docId);
+      }
       if (struct.isSetFields()) {
         {
           oprot.writeI32(struct.fields.size());
@@ -422,8 +519,12 @@ public class TSearchDoc implements org.apache.thrift.TBase<TSearchDoc, TSearchDo
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, TSearchDoc struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(1);
+      BitSet incoming = iprot.readBitSet(2);
       if (incoming.get(0)) {
+        struct.docId = iprot.readI32();
+        struct.setDocIdIsSet(true);
+      }
+      if (incoming.get(1)) {
         {
           org.apache.thrift.protocol.TMap _map14 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
           struct.fields = new HashMap<String,String>(2*_map14.size);

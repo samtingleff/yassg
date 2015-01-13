@@ -2,6 +2,7 @@ package com.tingleff.yassg.search;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.IndexSearcher;
@@ -35,6 +37,10 @@ public class LuceneSearchService implements SearchService {
 
 	private String[] searchFields;
 
+	//private IndexReader reader;
+
+	private Directory dir;
+
 	private SearcherManager searcherManager;
 
 	private StandardAnalyzer analyzer;
@@ -49,7 +55,8 @@ public class LuceneSearchService implements SearchService {
 	}
 
 	public void init() throws Exception {
-		Directory dir = FSDirectory.open(new File(this.directory));
+		this.dir = FSDirectory.open(new File(this.directory));
+		//this.reader = DirectoryReader.open(dir);
 		searcherManager = new SearcherManager(dir, new SearcherFactory());
 		analyzer = new StandardAnalyzer();
 		parser = new MultiFieldQueryParser(searchFields, analyzer);
@@ -73,20 +80,7 @@ public class LuceneSearchService implements SearchService {
 		try {
 			TopDocs topDocs = (sorting == null) ? searcher.search(q, n)
 					: searcher.search(q, n, sorting);
-			ScoreDoc[] hits = topDocs.scoreDocs;
-			List<TSearchDoc> results = new ArrayList<TSearchDoc>(hits.length);
-			for (int i = 0; i < hits.length; ++i) {
-				TSearchDoc doc = new TSearchDoc();
-				int docId = hits[i].doc;
-				Document d = searcher.doc(docId);
-				List<IndexableField> fields = d.getFields();
-				for (IndexableField f : fields) {
-					doc.putToFields(f.name(), f.stringValue());
-				}
-				results.add(doc);
-			}
-			TSearchResult sr = new TSearchResult();
-			sr.setHits(results);
+			TSearchResult sr = convert(searcher, topDocs, null);
 			return sr;
 		} finally {
 			searcherManager.release(searcher);
@@ -94,8 +88,56 @@ public class LuceneSearchService implements SearchService {
 		}
 	}
 
+	public TSearchResult similar(int targetDocId, int n, TSort sort) throws IOException, TSearchException {
+		IndexReader reader = null;
+		IndexSearcher searcher = searcherManager.acquire();
+		Sort sorting = buildSort(sort);
+		try {
+			reader = DirectoryReader.open(this.dir);
+			MoreLikeThis mlt = new MoreLikeThis(reader);
+			mlt.setMinTermFreq(0);
+			mlt.setMinDocFreq(0);
+			mlt.setAnalyzer(this.analyzer);
+			mlt.setFieldNames(this.searchFields);
+			mlt.setBoost(true);
+			Query q = mlt.like(targetDocId);
+			TopDocs topDocs = (sorting == null) ? searcher.search(q, n)
+					: searcher.search(q, n, sorting);
+
+			TSearchResult sr = convert(searcher, topDocs, new Integer(
+					targetDocId));
+			return sr;
+		} finally {
+			reader.close();
+			searcherManager.release(searcher);
+			searcher = null;
+		}
+	}
+
 	public synchronized void reopen() throws IOException {
 		searcherManager.maybeRefresh();
+	}
+
+	private TSearchResult convert(IndexSearcher searcher, TopDocs topDocs, Integer excludeDocId) throws IOException {
+		ScoreDoc[] hits = topDocs.scoreDocs;
+		List<TSearchDoc> results = new ArrayList<TSearchDoc>(hits.length);
+		for (int i = 0; i < hits.length; ++i) {
+			int docId = hits[i].doc;
+			if ((excludeDocId != null) && (excludeDocId.intValue() == docId)) {
+				continue;
+			}
+			TSearchDoc doc = new TSearchDoc();
+			doc.setDocId(docId);
+			Document d = searcher.doc(docId);
+			List<IndexableField> fields = d.getFields();
+			for (IndexableField f : fields) {
+				doc.putToFields(f.name(), f.stringValue());
+			}
+			results.add(doc);
+		}
+		TSearchResult sr = new TSearchResult();
+		sr.setHits(results);
+		return sr;
 	}
 
 	private Sort buildSort(TSort searchSort) {
