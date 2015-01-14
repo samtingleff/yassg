@@ -89,11 +89,10 @@ public class LuceneSearchService implements SearchService {
 	}
 
 	public TSearchResult similar(int targetDocId, int n, TSort sort) throws IOException, TSearchException {
-		IndexReader reader = null;
 		IndexSearcher searcher = searcherManager.acquire();
+		IndexReader reader = DirectoryReader.open(this.dir);
 		Sort sorting = buildSort(sort);
 		try {
-			reader = DirectoryReader.open(this.dir);
 			MoreLikeThis mlt = new MoreLikeThis(reader);
 			mlt.setMinTermFreq(0);
 			mlt.setMinDocFreq(0);
@@ -108,8 +107,8 @@ public class LuceneSearchService implements SearchService {
 					targetDocId));
 			return sr;
 		} finally {
-			reader.close();
 			searcherManager.release(searcher);
+			reader.close();
 			searcher = null;
 		}
 	}
