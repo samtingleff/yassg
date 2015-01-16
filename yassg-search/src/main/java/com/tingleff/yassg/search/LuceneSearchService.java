@@ -153,24 +153,38 @@ public class LuceneSearchService implements SearchService {
 					// explain why this result was included
 					String targetDocFieldValue = targetDoc.get(f.name());
 					if (targetDocFieldValue != null) {
-						double distance = editDistance.minDistance(f.stringValue(), targetDocFieldValue);
-						if (distance < ((double) (targetDocFieldValue.length()) / 3.0)) {
-							// edit distance should be less than a third to include in explain plan
-							TExplainTerm term = new TExplainTerm();
-							term.setField(f.name());
-							term.setValue(f.stringValue());
-							term.setScore(distance);
-							explain.addToTerms(term);
+						if (contains(this.searchFields, f.name())) {
+							double distance = editDistance.minDistance(
+									f.stringValue(), targetDocFieldValue);
+							if (distance < ((double) (targetDocFieldValue
+									.length()) / 3.0)) {
+								// edit distance should be less than a third
+								TExplainTerm term = new TExplainTerm();
+								term.setField(f.name());
+								term.setValue(f.stringValue());
+								term.setScore(distance);
+								explain.addToTerms(term);
+							}
 						}
 					}
 				}
 			}
 			doc.setExplain(explain);
-			results.add(doc);
+			// if I can't explain it, don't add it
+			if ((targetDoc == null) || (explain.getTermsSize() > 0))
+				results.add(doc);
 		}
 		TSearchResult sr = new TSearchResult();
 		sr.setHits(results);
 		return sr;
+	}
+
+	private boolean contains(String[] arr, String v) {
+		for (String a : arr) {
+			if (a.equals(v))
+				return true;
+		}
+		return false;
 	}
 
 	private Sort buildSort(TSort searchSort) {

@@ -112,7 +112,7 @@ public class Main {
 
 		// get an index searcher
 		LuceneSearchService searcher = new LuceneSearchService(
-				this.indexDir, SearchService.DefaultSearchFields);
+				this.indexDir, SearchService.DefaultSimilaritySearchFields);
 		searcher.init();
 
 		// iterate through again to write out

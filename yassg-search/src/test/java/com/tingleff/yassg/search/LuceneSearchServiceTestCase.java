@@ -118,7 +118,7 @@ public class LuceneSearchServiceTestCase {
 	public void setUp() throws Exception {
 		buildTestIndex();
 		search = new LuceneSearchService(indexDirectory, new String[] {
-				"title", "isbn" });
+				"title", "isbn", "tag" });
 		((LuceneSearchService) search).init();
 	}
 

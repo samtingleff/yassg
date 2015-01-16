@@ -26,6 +26,18 @@ public interface SearchService {
 			"technology"
 	};
 
+	public static String[] DefaultSimilaritySearchFields = new String[] {
+		"keywords",
+		"tag",
+		"body",
+		"company",
+		"country",
+		"fieldterminology",
+		"organization",
+		"person",
+		"technology"
+};
+
 	public TSearchResult search(String query, int n, TSort sort) throws IOException, TSearchException;
 
 	public TSearchResult similar(String search, int n, TSort sort) throws IOException, TSearchException;
