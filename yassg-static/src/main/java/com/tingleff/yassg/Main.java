@@ -247,7 +247,6 @@ public class Main {
 	private String getId(Page p, String body) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
-			md.update(p.getAuthor().getBytes());
 			md.update(p.getTitle().getBytes());
 			md.update(p.getHref().getBytes());
 			md.update(body.getBytes());
