@@ -52,6 +52,10 @@ public class Main {
 	// Fri, 21 Dec 2012 10:00:01 GMT
 	private static DateFormat rssDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 
+	// 2002-10-02T10:00:00-05:00
+	// http://www.faqs.org/rfcs/rfc3339.html
+	private static DateFormat atomDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
 	@Parameter(names = "-content", required = true)
 	private String contentDir;
 
@@ -168,7 +172,7 @@ public class Main {
 			rendered.add(render(p));
 		}
 		TemplateInstance ti = pageTemplateEngine.parse("atom");
-		ti.put("buildDate", rssDateFormat.format(now));
+		ti.put("buildDate", atomDateFormat.format(now));
 		ti.put("items", rendered);
 		String body = ti.render();
 		writer.writeFeed(body, "atom.xml");
@@ -199,7 +203,7 @@ public class Main {
 				p.getHref(),
 				htmlDateFormat.format(p.getPubDate().toDate()),
 				htmlDateFormatShort.format(p.getPubDate().toDate()),
-				rssDateFormat.format(p.getPubDate().toDate()),
+				atomDateFormat.format(p.getPubDate().toDate()),
 				p.getHref(),
 				renderedBody);
 		return r;
