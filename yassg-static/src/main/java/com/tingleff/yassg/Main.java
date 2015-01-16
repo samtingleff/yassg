@@ -100,14 +100,17 @@ public class Main {
 		indexService = new LuceneIndexService(indexDir);
 		indexService.open();
 
-		// iterate through pages
-		//  - add each to content db
-		//  - write each
+		// iterate once through pages once to hit AlchemyAPI and index
 		Iterable<Page> iter = pagedb.iterator();
 		for (Page page : iter) {
 			contentdb.addPage(page);
+			RenderedPage rp = indexPage(page);
+		}
+
+		// iterate through again to write out
+		iter = pagedb.iterator();
+		for (Page page : iter) {
 			writePage(page);
-			indexPage(page);
 		}
 		indexService.close();
 
@@ -193,7 +196,8 @@ public class Main {
 		return r;
 	}
 
-	private void indexPage(Page p) throws IOException {
+	private RenderedPage indexPage(Page p) throws IOException {
+		// render markdown body
 		RenderedPage renderedPage = render(p);
 
 		// extract links
@@ -227,6 +231,8 @@ public class Main {
 			}
 		}
 		indexService.indexPage(p, entities);
+
+		return renderedPage;
 	}
 
 	private String getId(Page p, String body) {
