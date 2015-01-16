@@ -39,7 +39,7 @@ public class TSearchService {
 
     public TSearchResult search(String query, int n, TSort sorting) throws TSearchException, org.apache.thrift.TException;
 
-    public TSearchResult similar(int id, int n, TSort sorting) throws TSearchException, org.apache.thrift.TException;
+    public TSearchResult similar(String query, int n, TSort sorting) throws TSearchException, org.apache.thrift.TException;
 
     public void reopen() throws TSearchException, org.apache.thrift.TException;
 
@@ -49,7 +49,7 @@ public class TSearchService {
 
     public void search(String query, int n, TSort sorting, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void similar(int id, int n, TSort sorting, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void similar(String query, int n, TSort sorting, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void reopen(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -103,16 +103,16 @@ public class TSearchService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "search failed: unknown result");
     }
 
-    public TSearchResult similar(int id, int n, TSort sorting) throws TSearchException, org.apache.thrift.TException
+    public TSearchResult similar(String query, int n, TSort sorting) throws TSearchException, org.apache.thrift.TException
     {
-      send_similar(id, n, sorting);
+      send_similar(query, n, sorting);
       return recv_similar();
     }
 
-    public void send_similar(int id, int n, TSort sorting) throws org.apache.thrift.TException
+    public void send_similar(String query, int n, TSort sorting) throws org.apache.thrift.TException
     {
       similar_args args = new similar_args();
-      args.setId(id);
+      args.setQuery(query);
       args.setN(n);
       args.setSorting(sorting);
       sendBase("similar", args);
@@ -209,20 +209,20 @@ public class TSearchService {
       }
     }
 
-    public void similar(int id, int n, TSort sorting, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void similar(String query, int n, TSort sorting, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      similar_call method_call = new similar_call(id, n, sorting, resultHandler, this, ___protocolFactory, ___transport);
+      similar_call method_call = new similar_call(query, n, sorting, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class similar_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private int id;
+      private String query;
       private int n;
       private TSort sorting;
-      public similar_call(int id, int n, TSort sorting, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public similar_call(String query, int n, TSort sorting, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.id = id;
+        this.query = query;
         this.n = n;
         this.sorting = sorting;
       }
@@ -230,7 +230,7 @@ public class TSearchService {
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("similar", org.apache.thrift.protocol.TMessageType.CALL, 0));
         similar_args args = new similar_args();
-        args.setId(id);
+        args.setQuery(query);
         args.setN(n);
         args.setSorting(sorting);
         args.write(prot);
@@ -335,7 +335,7 @@ public class TSearchService {
       public similar_result getResult(I iface, similar_args args) throws org.apache.thrift.TException {
         similar_result result = new similar_result();
         try {
-          result.success = iface.similar(args.id, args.n, args.sorting);
+          result.success = iface.similar(args.query, args.n, args.sorting);
         } catch (TSearchException error) {
           result.error = error;
         }
@@ -496,7 +496,7 @@ public class TSearchService {
       }
 
       public void start(I iface, similar_args args, org.apache.thrift.async.AsyncMethodCallback<TSearchResult> resultHandler) throws TException {
-        iface.similar(args.id, args.n, args.sorting,resultHandler);
+        iface.similar(args.query, args.n, args.sorting,resultHandler);
       }
     }
 
@@ -1599,7 +1599,7 @@ public class TSearchService {
   public static class similar_args implements org.apache.thrift.TBase<similar_args, similar_args._Fields>, java.io.Serializable, Cloneable, Comparable<similar_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("similar_args");
 
-    private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField QUERY_FIELD_DESC = new org.apache.thrift.protocol.TField("query", org.apache.thrift.protocol.TType.STRING, (short)1);
     private static final org.apache.thrift.protocol.TField N_FIELD_DESC = new org.apache.thrift.protocol.TField("n", org.apache.thrift.protocol.TType.I32, (short)2);
     private static final org.apache.thrift.protocol.TField SORTING_FIELD_DESC = new org.apache.thrift.protocol.TField("sorting", org.apache.thrift.protocol.TType.STRUCT, (short)3);
 
@@ -1609,13 +1609,13 @@ public class TSearchService {
       schemes.put(TupleScheme.class, new similar_argsTupleSchemeFactory());
     }
 
-    private int id; // required
+    private String query; // required
     private int n; // required
     private TSort sorting; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      ID((short)1, "id"),
+      QUERY((short)1, "query"),
       N((short)2, "n"),
       SORTING((short)3, "sorting");
 
@@ -1632,8 +1632,8 @@ public class TSearchService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // ID
-            return ID;
+          case 1: // QUERY
+            return QUERY;
           case 2: // N
             return N;
           case 3: // SORTING
@@ -1678,14 +1678,13 @@ public class TSearchService {
     }
 
     // isset id assignments
-    private static final int __ID_ISSET_ID = 0;
-    private static final int __N_ISSET_ID = 1;
+    private static final int __N_ISSET_ID = 0;
     private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.N, new org.apache.thrift.meta_data.FieldMetaData("n", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.SORTING, new org.apache.thrift.meta_data.FieldMetaData("sorting", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -1698,13 +1697,12 @@ public class TSearchService {
     }
 
     public similar_args(
-      int id,
+      String query,
       int n,
       TSort sorting)
     {
       this();
-      this.id = id;
-      setIdIsSet(true);
+      this.query = query;
       this.n = n;
       setNIsSet(true);
       this.sorting = sorting;
@@ -1715,7 +1713,9 @@ public class TSearchService {
      */
     public similar_args(similar_args other) {
       __isset_bitfield = other.__isset_bitfield;
-      this.id = other.id;
+      if (other.isSetQuery()) {
+        this.query = other.query;
+      }
       this.n = other.n;
       if (other.isSetSorting()) {
         this.sorting = new TSort(other.sorting);
@@ -1728,33 +1728,33 @@ public class TSearchService {
 
     @Override
     public void clear() {
-      setIdIsSet(false);
-      this.id = 0;
+      this.query = null;
       setNIsSet(false);
       this.n = 0;
       this.sorting = null;
     }
 
-    public int getId() {
-      return this.id;
+    public String getQuery() {
+      return this.query;
     }
 
-    public void setId(int id) {
-      this.id = id;
-      setIdIsSet(true);
+    public void setQuery(String query) {
+      this.query = query;
     }
 
-    public void unsetId() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ID_ISSET_ID);
+    public void unsetQuery() {
+      this.query = null;
     }
 
-    /** Returns true if field id is set (has been assigned a value) and false otherwise */
-    public boolean isSetId() {
-      return EncodingUtils.testBit(__isset_bitfield, __ID_ISSET_ID);
+    /** Returns true if field query is set (has been assigned a value) and false otherwise */
+    public boolean isSetQuery() {
+      return this.query != null;
     }
 
-    public void setIdIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ID_ISSET_ID, value);
+    public void setQueryIsSet(boolean value) {
+      if (!value) {
+        this.query = null;
+      }
     }
 
     public int getN() {
@@ -1804,11 +1804,11 @@ public class TSearchService {
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case ID:
+      case QUERY:
         if (value == null) {
-          unsetId();
+          unsetQuery();
         } else {
-          setId((Integer)value);
+          setQuery((String)value);
         }
         break;
 
@@ -1833,8 +1833,8 @@ public class TSearchService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case ID:
-        return Integer.valueOf(getId());
+      case QUERY:
+        return getQuery();
 
       case N:
         return Integer.valueOf(getN());
@@ -1853,8 +1853,8 @@ public class TSearchService {
       }
 
       switch (field) {
-      case ID:
-        return isSetId();
+      case QUERY:
+        return isSetQuery();
       case N:
         return isSetN();
       case SORTING:
@@ -1876,12 +1876,12 @@ public class TSearchService {
       if (that == null)
         return false;
 
-      boolean this_present_id = true;
-      boolean that_present_id = true;
-      if (this_present_id || that_present_id) {
-        if (!(this_present_id && that_present_id))
+      boolean this_present_query = true && this.isSetQuery();
+      boolean that_present_query = true && that.isSetQuery();
+      if (this_present_query || that_present_query) {
+        if (!(this_present_query && that_present_query))
           return false;
-        if (this.id != that.id)
+        if (!this.query.equals(that.query))
           return false;
       }
 
@@ -1910,10 +1910,10 @@ public class TSearchService {
     public int hashCode() {
       HashCodeBuilder builder = new HashCodeBuilder();
 
-      boolean present_id = true;
-      builder.append(present_id);
-      if (present_id)
-        builder.append(id);
+      boolean present_query = true && (isSetQuery());
+      builder.append(present_query);
+      if (present_query)
+        builder.append(query);
 
       boolean present_n = true;
       builder.append(present_n);
@@ -1936,12 +1936,12 @@ public class TSearchService {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetId()).compareTo(other.isSetId());
+      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.id, other.id);
+      if (isSetQuery()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.query, other.query);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1986,8 +1986,12 @@ public class TSearchService {
       StringBuilder sb = new StringBuilder("similar_args(");
       boolean first = true;
 
-      sb.append("id:");
-      sb.append(this.id);
+      sb.append("query:");
+      if (this.query == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.query);
+      }
       first = false;
       if (!first) sb.append(", ");
       sb.append("n:");
@@ -2049,10 +2053,10 @@ public class TSearchService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.id = iprot.readI32();
-                struct.setIdIsSet(true);
+            case 1: // QUERY
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.query = iprot.readString();
+                struct.setQueryIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -2087,9 +2091,11 @@ public class TSearchService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(ID_FIELD_DESC);
-        oprot.writeI32(struct.id);
-        oprot.writeFieldEnd();
+        if (struct.query != null) {
+          oprot.writeFieldBegin(QUERY_FIELD_DESC);
+          oprot.writeString(struct.query);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldBegin(N_FIELD_DESC);
         oprot.writeI32(struct.n);
         oprot.writeFieldEnd();
@@ -2116,7 +2122,7 @@ public class TSearchService {
       public void write(org.apache.thrift.protocol.TProtocol prot, similar_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetId()) {
+        if (struct.isSetQuery()) {
           optionals.set(0);
         }
         if (struct.isSetN()) {
@@ -2126,8 +2132,8 @@ public class TSearchService {
           optionals.set(2);
         }
         oprot.writeBitSet(optionals, 3);
-        if (struct.isSetId()) {
-          oprot.writeI32(struct.id);
+        if (struct.isSetQuery()) {
+          oprot.writeString(struct.query);
         }
         if (struct.isSetN()) {
           oprot.writeI32(struct.n);
@@ -2142,8 +2148,8 @@ public class TSearchService {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
-          struct.id = iprot.readI32();
-          struct.setIdIsSet(true);
+          struct.query = iprot.readString();
+          struct.setQueryIsSet(true);
         }
         if (incoming.get(1)) {
           struct.n = iprot.readI32();

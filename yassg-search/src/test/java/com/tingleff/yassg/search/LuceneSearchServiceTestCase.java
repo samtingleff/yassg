@@ -95,7 +95,7 @@ public class LuceneSearchServiceTestCase {
 
 	@Test
 	public void testSimilar() throws Exception {
-		TSearchResult result = search.similar(0, 10, null);
+		TSearchResult result = search.similar("id:1", 10, null);
 		List<TSearchDoc> docs = result.getHits();
 		Assert.assertEquals(1, docs.size());
 		TSearchDoc d1 = docs.get(0);

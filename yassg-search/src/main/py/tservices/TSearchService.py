@@ -27,10 +27,10 @@ class Iface:
     """
     pass
 
-  def similar(self, id, n, sorting):
+  def similar(self, query, n, sorting):
     """
     Parameters:
-     - id
+     - query
      - n
      - sorting
     """
@@ -83,20 +83,20 @@ class Client(Iface):
       raise result.error
     raise TApplicationException(TApplicationException.MISSING_RESULT, "search failed: unknown result");
 
-  def similar(self, id, n, sorting):
+  def similar(self, query, n, sorting):
     """
     Parameters:
-     - id
+     - query
      - n
      - sorting
     """
-    self.send_similar(id, n, sorting)
+    self.send_similar(query, n, sorting)
     return self.recv_similar()
 
-  def send_similar(self, id, n, sorting):
+  def send_similar(self, query, n, sorting):
     self._oprot.writeMessageBegin('similar', TMessageType.CALL, self._seqid)
     args = similar_args()
-    args.id = id
+    args.query = query
     args.n = n
     args.sorting = sorting
     args.write(self._oprot)
@@ -188,7 +188,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = similar_result()
     try:
-      result.success = self._handler.similar(args.id, args.n, args.sorting)
+      result.success = self._handler.similar(args.query, args.n, args.sorting)
     except TSearchException, error:
       result.error = error
     oprot.writeMessageBegin("similar", TMessageType.REPLY, seqid)
@@ -374,20 +374,20 @@ class search_result:
 class similar_args:
   """
   Attributes:
-   - id
+   - query
    - n
    - sorting
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'id', None, None, ), # 1
+    (1, TType.STRING, 'query', None, None, ), # 1
     (2, TType.I32, 'n', None, None, ), # 2
     (3, TType.STRUCT, 'sorting', (TSort, TSort.thrift_spec), None, ), # 3
   )
 
-  def __init__(self, id=None, n=None, sorting=None,):
-    self.id = id
+  def __init__(self, query=None, n=None, sorting=None,):
+    self.query = query
     self.n = n
     self.sorting = sorting
 
@@ -401,8 +401,8 @@ class similar_args:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.id = iprot.readI32();
+        if ftype == TType.STRING:
+          self.query = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -426,9 +426,9 @@ class similar_args:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('similar_args')
-    if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I32, 1)
-      oprot.writeI32(self.id)
+    if self.query is not None:
+      oprot.writeFieldBegin('query', TType.STRING, 1)
+      oprot.writeString(self.query)
       oprot.writeFieldEnd()
     if self.n is not None:
       oprot.writeFieldBegin('n', TType.I32, 2)

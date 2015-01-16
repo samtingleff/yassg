@@ -87,11 +87,20 @@ public class LuceneSearchService implements SearchService {
 		}
 	}
 
-	public TSearchResult similar(int targetDocId, int n, TSort sort) throws IOException, TSearchException {
+	public TSearchResult similar(String search, int n, TSort sort) throws IOException, TSearchException {
 		IndexSearcher searcher = searcherManager.acquire();
 		IndexReader reader = DirectoryReader.open(this.dir);
 		Sort sorting = buildSort(sort);
 		try {
+			// first conduct a search and grab the first hit
+			Query targetQuery = parser.parse(search);
+			TopDocs topTargetDocs = searcher.search(targetQuery, n);
+			ScoreDoc[] hits = topTargetDocs.scoreDocs;
+
+			if (hits.length == 0)
+				return new TSearchResult();
+
+			int targetDocId = hits[0].doc;
 			MoreLikeThis mlt = new MoreLikeThis(reader);
 			mlt.setMinTermFreq(0);
 			mlt.setMinDocFreq(0);
@@ -105,6 +114,10 @@ public class LuceneSearchService implements SearchService {
 			TSearchResult sr = convert(searcher, topDocs, new Integer(
 					targetDocId));
 			return sr;
+		} catch (ParseException e) {
+			// TODO: log me?
+			e.printStackTrace();
+			throw new TSearchException();
 		} finally {
 			searcherManager.release(searcher);
 			reader.close();

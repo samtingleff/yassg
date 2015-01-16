@@ -35,6 +35,6 @@ exception TSearchException {
 
 service TSearchService {
  TSearchResult search(1: string query, 2: i32 n, 3: TSort sorting) throws (1: TSearchException error),
- TSearchResult similar(1: i32 id, 2: i32 n, 3: TSort sorting) throws (1: TSearchException error),
+ TSearchResult similar(1: string query, 2: i32 n, 3: TSort sorting) throws (1: TSearchException error),
  void reopen() throws (1: TSearchException error)
 }

@@ -30,10 +30,10 @@ public class SearchServiceHandler implements TSearchService.Iface {
 	}
 
 	@Override
-	public TSearchResult similar(int id, int n, TSort sorting)
+	public TSearchResult similar(String search, int n, TSort sorting)
 			throws TSearchException, TException {
 		try {
-			return backend.similar(id, n, sorting);
+			return backend.similar(search, n, sorting);
 		} catch (IOException e) {
 			// TODO: log me?
 			e.printStackTrace();

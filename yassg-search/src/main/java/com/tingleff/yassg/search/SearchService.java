@@ -10,7 +10,7 @@ public interface SearchService {
 
 	public TSearchResult search(String query, int n, TSort sort) throws IOException, TSearchException;
 
-	public TSearchResult similar(int id, int n, TSort sort) throws IOException, TSearchException;
+	public TSearchResult similar(String search, int n, TSort sort) throws IOException, TSearchException;
 
 	public void reopen() throws IOException;
 }
