@@ -11,7 +11,6 @@ public interface SearchService {
 	// should match LuceneIndexService in yassg-static
 	public static String[] DefaultSearchFields = new String[] {
 			"id",
-			"author",
 			"title",
 			"keywords",
 			"description",
