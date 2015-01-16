@@ -154,8 +154,8 @@ public class LuceneSearchService implements SearchService {
 					String targetDocFieldValue = targetDoc.get(f.name());
 					if (targetDocFieldValue != null) {
 						double distance = editDistance.minDistance(f.stringValue(), targetDocFieldValue);
-						if (distance < ((double) (targetDocFieldValue.length()) / 2.0)) {
-							// edit distance should be less than half to include in explain plan
+						if (distance < ((double) (targetDocFieldValue.length()) / 3.0)) {
+							// edit distance should be less than a third to include in explain plan
 							TExplainTerm term = new TExplainTerm();
 							term.setField(f.name());
 							term.setValue(f.stringValue());
