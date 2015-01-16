@@ -1,4 +1,4 @@
-package com.tingleff.yassg.search;
+package com.tingleff.yassg.dynamic;
 
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.server.TServer;

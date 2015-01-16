@@ -1,9 +1,11 @@
-package com.tingleff.yassg.search;
+package com.tingleff.yassg.dynamic;
 
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.tingleff.yassg.search.LuceneSearchService;
+import com.tingleff.yassg.search.SearchService;
 
 public class Main {
 

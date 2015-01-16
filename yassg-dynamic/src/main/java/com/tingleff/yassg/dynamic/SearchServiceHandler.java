@@ -1,9 +1,10 @@
-package com.tingleff.yassg.search;
+package com.tingleff.yassg.dynamic;
 
 import java.io.IOException;
 
 import org.apache.thrift.TException;
 
+import com.tingleff.yassg.search.SearchService;
 import com.tingleff.yassg.search.types.TSearchException;
 import com.tingleff.yassg.search.types.TSearchResult;
 import com.tingleff.yassg.search.types.TSearchService;
