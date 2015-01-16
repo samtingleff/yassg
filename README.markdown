@@ -12,7 +12,7 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 * Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -index index/ -output output/
 * Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
 
-# Features #
+# Interesting Features #
 
 * Calls into [AlchemyAPI](http://www.alchemyapi.com/) to retrieve named entities on linked content
 * Builds a lucene index based on post content as well as entities from the linked content
@@ -43,6 +43,4 @@ See [my own blog](http:///sam.tingleff.com/) for an example project.
 
 # Future #
 
-- Build a search index for client-side search
-- Suggestions of related content
 - Do something with tags
