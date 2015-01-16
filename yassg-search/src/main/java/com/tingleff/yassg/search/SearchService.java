@@ -27,7 +27,6 @@ public interface SearchService {
 	};
 
 	public static String[] DefaultSimilaritySearchFields = new String[] {
-		"keywords",
 		"tag",
 		"body",
 		"company",
