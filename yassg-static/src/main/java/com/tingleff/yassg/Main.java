@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,13 +105,13 @@ public class Main {
 			contentdb.addPage(page);
 			RenderedPage rp = indexPage(page);
 		}
+		indexService.close();
 
 		// iterate through again to write out
 		iter = pagedb.iterator();
 		for (Page page : iter) {
 			writePage(page);
 		}
-		indexService.close();
 
 		// write out /index.html
 		writeIndex();
