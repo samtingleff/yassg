@@ -15,25 +15,6 @@ public class Main {
 		m.run();
 	}
 
-	// should match LuceneIndexService in yassg-static
-	private static String[] defaultSearchFields = new String[] {
-			"id",
-			"author",
-			"title",
-			"keywords",
-			"description",
-			"tag",
-			"href",
-			"date",
-			"body",
-			"company",
-			"country",
-			"fieldterminology",
-			"organization",
-			"person",
-			"technology"
-	};
-
 	@Parameter(names = "-dir", description = "Index directory", required = true)
 	private String directory;
 
@@ -51,7 +32,7 @@ public class Main {
 	}
 
 	private SearchService initSearcher() throws Exception {
-		String[] searchFields = defaultSearchFields;
+		String[] searchFields = SearchService.DefaultSearchFields;
 		if ((fields != null) && (fields.size() > 0)) {
 			searchFields = fields.toArray(new String[fields.size()]);
 		}

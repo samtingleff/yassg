@@ -8,6 +8,25 @@ import com.tingleff.yassg.search.types.TSort;
 
 public interface SearchService {
 
+	// should match LuceneIndexService in yassg-static
+	public static String[] DefaultSearchFields = new String[] {
+			"id",
+			"author",
+			"title",
+			"keywords",
+			"description",
+			"tag",
+			"href",
+			"date",
+			"body",
+			"company",
+			"country",
+			"fieldterminology",
+			"organization",
+			"person",
+			"technology"
+	};
+
 	public TSearchResult search(String query, int n, TSort sort) throws IOException, TSearchException;
 
 	public TSearchResult similar(String search, int n, TSort sort) throws IOException, TSearchException;

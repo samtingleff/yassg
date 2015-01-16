@@ -28,6 +28,9 @@ import com.tingleff.yassg.model.Page;
 import com.tingleff.yassg.model.RenderedPage;
 import com.tingleff.yassg.pagedb.PageDB;
 import com.tingleff.yassg.pagedb.file.FilePageDB;
+import com.tingleff.yassg.search.LuceneSearchService;
+import com.tingleff.yassg.search.SearchService;
+import com.tingleff.yassg.search.types.TSearchResult;
 import com.tingleff.yassg.semantic.AlchemyAPISemanticClient;
 import com.tingleff.yassg.semantic.NamedEntity;
 import com.tingleff.yassg.semantic.NamedEntityResponse;
@@ -107,10 +110,16 @@ public class Main {
 		}
 		indexService.close();
 
+		// get an index searcher
+		LuceneSearchService searcher = new LuceneSearchService(
+				this.indexDir, SearchService.DefaultSearchFields);
+		searcher.init();
+
 		// iterate through again to write out
 		iter = pagedb.iterator();
 		for (Page page : iter) {
-			writePage(page);
+			TSearchResult related = searcher.similar("id:" + Long.toHexString(page.getId()), 3, null);
+			writePage(page, related);
 		}
 
 		// write out /index.html
@@ -165,13 +174,14 @@ public class Main {
 		writer.writeFeed(body, "atom.xml");
 	}
 
-	private void writePage(Page page) throws IOException {
+	private void writePage(Page page, TSearchResult related) throws IOException {
 		if (!writer.shouldWritePage(page))
 			return;
 		RenderedPage renderedPage = render(page);
 		TemplateInstance ti = pageTemplateEngine.parse("post");
 		ti.put("page", renderedPage);
 		ti.put("attr", page.getAttributes());
+		ti.put("related", related.getHits());
 		String body = ti.render();
 		writer.writePage(page, body);
 	}
