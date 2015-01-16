@@ -203,22 +203,178 @@ class TSort:
   def __ne__(self, other):
     return not (self == other)
 
+class TExplainTerm:
+  """
+  Attributes:
+   - field
+   - value
+   - score
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'field', None, None, ), # 1
+    (2, TType.STRING, 'value', None, None, ), # 2
+    (3, TType.DOUBLE, 'score', None, None, ), # 3
+  )
+
+  def __init__(self, field=None, value=None, score=None,):
+    self.field = field
+    self.value = value
+    self.score = score
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.field = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.value = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.DOUBLE:
+          self.score = iprot.readDouble();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('TExplainTerm')
+    if self.field is not None:
+      oprot.writeFieldBegin('field', TType.STRING, 1)
+      oprot.writeString(self.field)
+      oprot.writeFieldEnd()
+    if self.value is not None:
+      oprot.writeFieldBegin('value', TType.STRING, 2)
+      oprot.writeString(self.value)
+      oprot.writeFieldEnd()
+    if self.score is not None:
+      oprot.writeFieldBegin('score', TType.DOUBLE, 3)
+      oprot.writeDouble(self.score)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class TExplain:
+  """
+  Attributes:
+   - terms
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'terms', (TType.STRUCT,(TExplainTerm, TExplainTerm.thrift_spec)), None, ), # 1
+  )
+
+  def __init__(self, terms=None,):
+    self.terms = terms
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.terms = []
+          (_etype10, _size7) = iprot.readListBegin()
+          for _i11 in xrange(_size7):
+            _elem12 = TExplainTerm()
+            _elem12.read(iprot)
+            self.terms.append(_elem12)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('TExplain')
+    if self.terms is not None:
+      oprot.writeFieldBegin('terms', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.terms))
+      for iter13 in self.terms:
+        iter13.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class TSearchDoc:
   """
   Attributes:
    - docId
    - fields
+   - explain
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'docId', None, None, ), # 1
     (2, TType.MAP, 'fields', (TType.STRING,None,TType.STRING,None), None, ), # 2
+    (3, TType.STRUCT, 'explain', (TExplain, TExplain.thrift_spec), None, ), # 3
   )
 
-  def __init__(self, docId=None, fields=None,):
+  def __init__(self, docId=None, fields=None, explain=None,):
     self.docId = docId
     self.fields = fields
+    self.explain = explain
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -237,12 +393,18 @@ class TSearchDoc:
       elif fid == 2:
         if ftype == TType.MAP:
           self.fields = {}
-          (_ktype8, _vtype9, _size7 ) = iprot.readMapBegin()
-          for _i11 in xrange(_size7):
-            _key12 = iprot.readString();
-            _val13 = iprot.readString();
-            self.fields[_key12] = _val13
+          (_ktype15, _vtype16, _size14 ) = iprot.readMapBegin()
+          for _i18 in xrange(_size14):
+            _key19 = iprot.readString();
+            _val20 = iprot.readString();
+            self.fields[_key19] = _val20
           iprot.readMapEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.explain = TExplain()
+          self.explain.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -262,10 +424,14 @@ class TSearchDoc:
     if self.fields is not None:
       oprot.writeFieldBegin('fields', TType.MAP, 2)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.fields))
-      for kiter14,viter15 in self.fields.items():
-        oprot.writeString(kiter14)
-        oprot.writeString(viter15)
+      for kiter21,viter22 in self.fields.items():
+        oprot.writeString(kiter21)
+        oprot.writeString(viter22)
       oprot.writeMapEnd()
+      oprot.writeFieldEnd()
+    if self.explain is not None:
+      oprot.writeFieldBegin('explain', TType.STRUCT, 3)
+      self.explain.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -311,11 +477,11 @@ class TSearchResult:
       if fid == 1:
         if ftype == TType.LIST:
           self.hits = []
-          (_etype19, _size16) = iprot.readListBegin()
-          for _i20 in xrange(_size16):
-            _elem21 = TSearchDoc()
-            _elem21.read(iprot)
-            self.hits.append(_elem21)
+          (_etype26, _size23) = iprot.readListBegin()
+          for _i27 in xrange(_size23):
+            _elem28 = TSearchDoc()
+            _elem28.read(iprot)
+            self.hits.append(_elem28)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -332,8 +498,8 @@ class TSearchResult:
     if self.hits is not None:
       oprot.writeFieldBegin('hits', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.hits))
-      for iter22 in self.hits:
-        iter22.write(oprot)
+      for iter29 in self.hits:
+        iter29.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

@@ -33,22 +33,22 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSearchResult._Fields>, java.io.Serializable, Cloneable, Comparable<TSearchResult> {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TSearchResult");
+public class TExplain implements org.apache.thrift.TBase<TExplain, TExplain._Fields>, java.io.Serializable, Cloneable, Comparable<TExplain> {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TExplain");
 
-  private static final org.apache.thrift.protocol.TField HITS_FIELD_DESC = new org.apache.thrift.protocol.TField("hits", org.apache.thrift.protocol.TType.LIST, (short)1);
+  private static final org.apache.thrift.protocol.TField TERMS_FIELD_DESC = new org.apache.thrift.protocol.TField("terms", org.apache.thrift.protocol.TType.LIST, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new TSearchResultStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new TSearchResultTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TExplainStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TExplainTupleSchemeFactory());
   }
 
-  private List<TSearchDoc> hits; // required
+  private List<TExplainTerm> terms; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    HITS((short)1, "hits");
+    TERMS((short)1, "terms");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -63,8 +63,8 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // HITS
-          return HITS;
+        case 1: // TERMS
+          return TERMS;
         default:
           return null;
       }
@@ -105,93 +105,87 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
   }
 
   // isset id assignments
+  private _Fields optionals[] = {_Fields.TERMS};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.HITS, new org.apache.thrift.meta_data.FieldMetaData("hits", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.TERMS, new org.apache.thrift.meta_data.FieldMetaData("terms", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TSearchDoc.class))));
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TExplainTerm.class))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TSearchResult.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TExplain.class, metaDataMap);
   }
 
-  public TSearchResult() {
-  }
-
-  public TSearchResult(
-    List<TSearchDoc> hits)
-  {
-    this();
-    this.hits = hits;
+  public TExplain() {
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public TSearchResult(TSearchResult other) {
-    if (other.isSetHits()) {
-      List<TSearchDoc> __this__hits = new ArrayList<TSearchDoc>(other.hits.size());
-      for (TSearchDoc other_element : other.hits) {
-        __this__hits.add(new TSearchDoc(other_element));
+  public TExplain(TExplain other) {
+    if (other.isSetTerms()) {
+      List<TExplainTerm> __this__terms = new ArrayList<TExplainTerm>(other.terms.size());
+      for (TExplainTerm other_element : other.terms) {
+        __this__terms.add(new TExplainTerm(other_element));
       }
-      this.hits = __this__hits;
+      this.terms = __this__terms;
     }
   }
 
-  public TSearchResult deepCopy() {
-    return new TSearchResult(this);
+  public TExplain deepCopy() {
+    return new TExplain(this);
   }
 
   @Override
   public void clear() {
-    this.hits = null;
+    this.terms = null;
   }
 
-  public int getHitsSize() {
-    return (this.hits == null) ? 0 : this.hits.size();
+  public int getTermsSize() {
+    return (this.terms == null) ? 0 : this.terms.size();
   }
 
-  public java.util.Iterator<TSearchDoc> getHitsIterator() {
-    return (this.hits == null) ? null : this.hits.iterator();
+  public java.util.Iterator<TExplainTerm> getTermsIterator() {
+    return (this.terms == null) ? null : this.terms.iterator();
   }
 
-  public void addToHits(TSearchDoc elem) {
-    if (this.hits == null) {
-      this.hits = new ArrayList<TSearchDoc>();
+  public void addToTerms(TExplainTerm elem) {
+    if (this.terms == null) {
+      this.terms = new ArrayList<TExplainTerm>();
     }
-    this.hits.add(elem);
+    this.terms.add(elem);
   }
 
-  public List<TSearchDoc> getHits() {
-    return this.hits;
+  public List<TExplainTerm> getTerms() {
+    return this.terms;
   }
 
-  public void setHits(List<TSearchDoc> hits) {
-    this.hits = hits;
+  public void setTerms(List<TExplainTerm> terms) {
+    this.terms = terms;
   }
 
-  public void unsetHits() {
-    this.hits = null;
+  public void unsetTerms() {
+    this.terms = null;
   }
 
-  /** Returns true if field hits is set (has been assigned a value) and false otherwise */
-  public boolean isSetHits() {
-    return this.hits != null;
+  /** Returns true if field terms is set (has been assigned a value) and false otherwise */
+  public boolean isSetTerms() {
+    return this.terms != null;
   }
 
-  public void setHitsIsSet(boolean value) {
+  public void setTermsIsSet(boolean value) {
     if (!value) {
-      this.hits = null;
+      this.terms = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case HITS:
+    case TERMS:
       if (value == null) {
-        unsetHits();
+        unsetTerms();
       } else {
-        setHits((List<TSearchDoc>)value);
+        setTerms((List<TExplainTerm>)value);
       }
       break;
 
@@ -200,8 +194,8 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case HITS:
-      return getHits();
+    case TERMS:
+      return getTerms();
 
     }
     throw new IllegalStateException();
@@ -214,8 +208,8 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
     }
 
     switch (field) {
-    case HITS:
-      return isSetHits();
+    case TERMS:
+      return isSetTerms();
     }
     throw new IllegalStateException();
   }
@@ -224,21 +218,21 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof TSearchResult)
-      return this.equals((TSearchResult)that);
+    if (that instanceof TExplain)
+      return this.equals((TExplain)that);
     return false;
   }
 
-  public boolean equals(TSearchResult that) {
+  public boolean equals(TExplain that) {
     if (that == null)
       return false;
 
-    boolean this_present_hits = true && this.isSetHits();
-    boolean that_present_hits = true && that.isSetHits();
-    if (this_present_hits || that_present_hits) {
-      if (!(this_present_hits && that_present_hits))
+    boolean this_present_terms = true && this.isSetTerms();
+    boolean that_present_terms = true && that.isSetTerms();
+    if (this_present_terms || that_present_terms) {
+      if (!(this_present_terms && that_present_terms))
         return false;
-      if (!this.hits.equals(that.hits))
+      if (!this.terms.equals(that.terms))
         return false;
     }
 
@@ -249,28 +243,28 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
 
-    boolean present_hits = true && (isSetHits());
-    builder.append(present_hits);
-    if (present_hits)
-      builder.append(hits);
+    boolean present_terms = true && (isSetTerms());
+    builder.append(present_terms);
+    if (present_terms)
+      builder.append(terms);
 
     return builder.toHashCode();
   }
 
   @Override
-  public int compareTo(TSearchResult other) {
+  public int compareTo(TExplain other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.valueOf(isSetHits()).compareTo(other.isSetHits());
+    lastComparison = Boolean.valueOf(isSetTerms()).compareTo(other.isSetTerms());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetHits()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hits, other.hits);
+    if (isSetTerms()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.terms, other.terms);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -292,16 +286,18 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("TSearchResult(");
+    StringBuilder sb = new StringBuilder("TExplain(");
     boolean first = true;
 
-    sb.append("hits:");
-    if (this.hits == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.hits);
+    if (isSetTerms()) {
+      sb.append("terms:");
+      if (this.terms == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.terms);
+      }
+      first = false;
     }
-    first = false;
     sb.append(")");
     return sb.toString();
   }
@@ -327,15 +323,15 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
     }
   }
 
-  private static class TSearchResultStandardSchemeFactory implements SchemeFactory {
-    public TSearchResultStandardScheme getScheme() {
-      return new TSearchResultStandardScheme();
+  private static class TExplainStandardSchemeFactory implements SchemeFactory {
+    public TExplainStandardScheme getScheme() {
+      return new TExplainStandardScheme();
     }
   }
 
-  private static class TSearchResultStandardScheme extends StandardScheme<TSearchResult> {
+  private static class TExplainStandardScheme extends StandardScheme<TExplain> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, TSearchResult struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TExplain struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -345,21 +341,21 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
           break;
         }
         switch (schemeField.id) {
-          case 1: // HITS
+          case 1: // TERMS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list26 = iprot.readListBegin();
-                struct.hits = new ArrayList<TSearchDoc>(_list26.size);
-                for (int _i27 = 0; _i27 < _list26.size; ++_i27)
+                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
+                struct.terms = new ArrayList<TExplainTerm>(_list8.size);
+                for (int _i9 = 0; _i9 < _list8.size; ++_i9)
                 {
-                  TSearchDoc _elem28;
-                  _elem28 = new TSearchDoc();
-                  _elem28.read(iprot);
-                  struct.hits.add(_elem28);
+                  TExplainTerm _elem10;
+                  _elem10 = new TExplainTerm();
+                  _elem10.read(iprot);
+                  struct.terms.add(_elem10);
                 }
                 iprot.readListEnd();
               }
-              struct.setHitsIsSet(true);
+              struct.setTermsIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -373,21 +369,23 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, TSearchResult struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TExplain struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.hits != null) {
-        oprot.writeFieldBegin(HITS_FIELD_DESC);
-        {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.hits.size()));
-          for (TSearchDoc _iter29 : struct.hits)
+      if (struct.terms != null) {
+        if (struct.isSetTerms()) {
+          oprot.writeFieldBegin(TERMS_FIELD_DESC);
           {
-            _iter29.write(oprot);
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.terms.size()));
+            for (TExplainTerm _iter11 : struct.terms)
+            {
+              _iter11.write(oprot);
+            }
+            oprot.writeListEnd();
           }
-          oprot.writeListEnd();
+          oprot.writeFieldEnd();
         }
-        oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -395,50 +393,50 @@ public class TSearchResult implements org.apache.thrift.TBase<TSearchResult, TSe
 
   }
 
-  private static class TSearchResultTupleSchemeFactory implements SchemeFactory {
-    public TSearchResultTupleScheme getScheme() {
-      return new TSearchResultTupleScheme();
+  private static class TExplainTupleSchemeFactory implements SchemeFactory {
+    public TExplainTupleScheme getScheme() {
+      return new TExplainTupleScheme();
     }
   }
 
-  private static class TSearchResultTupleScheme extends TupleScheme<TSearchResult> {
+  private static class TExplainTupleScheme extends TupleScheme<TExplain> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, TSearchResult struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TExplain struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetHits()) {
+      if (struct.isSetTerms()) {
         optionals.set(0);
       }
       oprot.writeBitSet(optionals, 1);
-      if (struct.isSetHits()) {
+      if (struct.isSetTerms()) {
         {
-          oprot.writeI32(struct.hits.size());
-          for (TSearchDoc _iter30 : struct.hits)
+          oprot.writeI32(struct.terms.size());
+          for (TExplainTerm _iter12 : struct.terms)
           {
-            _iter30.write(oprot);
+            _iter12.write(oprot);
           }
         }
       }
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, TSearchResult struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TExplain struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list31 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.hits = new ArrayList<TSearchDoc>(_list31.size);
-          for (int _i32 = 0; _i32 < _list31.size; ++_i32)
+          org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.terms = new ArrayList<TExplainTerm>(_list13.size);
+          for (int _i14 = 0; _i14 < _list13.size; ++_i14)
           {
-            TSearchDoc _elem33;
-            _elem33 = new TSearchDoc();
-            _elem33.read(iprot);
-            struct.hits.add(_elem33);
+            TExplainTerm _elem15;
+            _elem15 = new TExplainTerm();
+            _elem15.read(iprot);
+            struct.terms.add(_elem15);
           }
         }
-        struct.setHitsIsSet(true);
+        struct.setTermsIsSet(true);
       }
     }
   }

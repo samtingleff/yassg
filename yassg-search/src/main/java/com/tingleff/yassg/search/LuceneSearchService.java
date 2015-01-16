@@ -24,6 +24,8 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import com.tingleff.yassg.search.types.TExplain;
+import com.tingleff.yassg.search.types.TExplainTerm;
 import com.tingleff.yassg.search.types.TSearchDoc;
 import com.tingleff.yassg.search.types.TSearchException;
 import com.tingleff.yassg.search.types.TSearchResult;
@@ -45,6 +47,8 @@ public class LuceneSearchService implements SearchService {
 	private StandardAnalyzer analyzer;
 
 	private MultiFieldQueryParser parser;
+
+	private EditDistance editDistance = new EditDistance();
 
 	public LuceneSearchService() { }
 
@@ -79,7 +83,7 @@ public class LuceneSearchService implements SearchService {
 		try {
 			TopDocs topDocs = (sorting == null) ? searcher.search(q, n)
 					: searcher.search(q, n, sorting);
-			TSearchResult sr = convert(searcher, topDocs, null);
+			TSearchResult sr = convert(searcher, topDocs, null, null);
 			return sr;
 		} finally {
 			searcherManager.release(searcher);
@@ -101,6 +105,7 @@ public class LuceneSearchService implements SearchService {
 				return new TSearchResult();
 
 			int targetDocId = hits[0].doc;
+			Document targetDoc = searcher.doc(targetDocId);
 			MoreLikeThis mlt = new MoreLikeThis(reader);
 			mlt.setMinTermFreq(0);
 			mlt.setMinDocFreq(0);
@@ -110,9 +115,8 @@ public class LuceneSearchService implements SearchService {
 			Query q = mlt.like(targetDocId);
 			TopDocs topDocs = (sorting == null) ? searcher.search(q, n)
 					: searcher.search(q, n, sorting);
-
 			TSearchResult sr = convert(searcher, topDocs, new Integer(
-					targetDocId));
+					targetDocId), targetDoc);
 			return sr;
 		} catch (ParseException e) {
 			// TODO: log me?
@@ -129,7 +133,8 @@ public class LuceneSearchService implements SearchService {
 		searcherManager.maybeRefresh();
 	}
 
-	private TSearchResult convert(IndexSearcher searcher, TopDocs topDocs, Integer excludeDocId) throws IOException {
+	private TSearchResult convert(IndexSearcher searcher, TopDocs topDocs,
+			Integer excludeDocId, Document targetDoc) throws IOException {
 		ScoreDoc[] hits = topDocs.scoreDocs;
 		List<TSearchDoc> results = new ArrayList<TSearchDoc>(hits.length);
 		for (int i = 0; i < hits.length; ++i) {
@@ -138,12 +143,29 @@ public class LuceneSearchService implements SearchService {
 				continue;
 			}
 			TSearchDoc doc = new TSearchDoc();
+			TExplain explain = new TExplain();
 			doc.setDocId(docId);
 			Document d = searcher.doc(docId);
 			List<IndexableField> fields = d.getFields();
 			for (IndexableField f : fields) {
 				doc.putToFields(f.name(), f.stringValue());
+				if (targetDoc != null) {
+					// explain why this result was included
+					String targetDocFieldValue = targetDoc.get(f.name());
+					if (targetDocFieldValue != null) {
+						double distance = editDistance.minDistance(f.stringValue(), targetDocFieldValue);
+						if (distance < ((double) (targetDocFieldValue.length()) / 2.0)) {
+							// edit distance should be less than half to include in explain plan
+							TExplainTerm term = new TExplainTerm();
+							term.setField(f.name());
+							term.setValue(f.stringValue());
+							term.setScore(distance);
+							explain.addToTerms(term);
+						}
+					}
+				}
 			}
+			doc.setExplain(explain);
 			results.add(doc);
 		}
 		TSearchResult sr = new TSearchResult();

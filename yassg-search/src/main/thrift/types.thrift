@@ -21,9 +21,23 @@ struct TSort {
  1: list<TSortField> sortFields
 }
 
+// 
+struct TExplainTerm {
+ 1: optional string field,
+ 2: optional string value,
+ 3: optional double score
+}
+
+// explains why a particular result was included
+struct TExplain {
+ 1: optional list<TExplainTerm> terms
+}
+
+// an individual search result
 struct TSearchDoc {
  1: optional i32 docId,
- 2: optional map<string, string> fields
+ 2: optional map<string, string> fields,
+ 3: optional TExplain explain
 }
 
 struct TSearchResult {
