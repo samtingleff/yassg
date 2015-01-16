@@ -80,7 +80,7 @@ public class LuceneIndexService implements IndexService {
 
 	private Document decorate(Document doc, Page page) {
 		doc.add(new StringField("id",Long.toHexString(page.getId()), Field.Store.YES));
-		doc.add(new TextField("author", page.getAuthor(), Field.Store.YES));
+		doc.add(new StringField("author", page.getAuthor(), Field.Store.YES));
 		doc.add(new TextField("title", page.getTitle(), Field.Store.YES));
 		doc.add(new TextField("keywords", page.getKeywords(), Field.Store.YES));
 		doc.add(new TextField("description", page.getDescription(), Field.Store.YES));
