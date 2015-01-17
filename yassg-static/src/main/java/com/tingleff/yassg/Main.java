@@ -1,14 +1,17 @@
 package com.tingleff.yassg;
 
 import java.io.IOException;
+import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
 import org.jsoup.Jsoup;
@@ -219,12 +222,23 @@ public class Main {
 		Element body = doc.body();
 		List<Element> links = body.getElementsByTag("a");
 		List<String> urls = new ArrayList<String>(links.size());
+		Set<String> domains = new HashSet<String>(links.size());
 		for (Element link : links) {
 			String nofollow = link.attr("rel");
 			if ((nofollow == null) || (!"nofollow".equals(nofollow))) {
 				String href = link.attr("href");
-				if ((href != null) && (href.startsWith("http")))
+				if ((href != null) && (href.startsWith("http"))) {
 					urls.add(link.attr("href"));
+					// strip out domain
+					try {
+						URI uri = new URI(href);
+						String domain = uri.getHost();
+						// strip out "www."
+						if (domain.startsWith("www."))
+							domain = domain.substring(4, domain.length());
+						domains.add(domain);
+					} catch(Exception e) { }
+				}
 			}
 		}
 
@@ -243,7 +257,7 @@ public class Main {
 				}
 			}
 		}
-		indexService.indexPage(p, entities);
+		indexService.indexPage(p, entities, domains);
 
 		return renderedPage;
 	}

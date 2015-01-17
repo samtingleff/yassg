@@ -18,6 +18,7 @@ public interface SearchService {
 			"href",
 			"date",
 			"body",
+			"domain",
 			"company",
 			"country",
 			"fieldterminology",
@@ -29,6 +30,7 @@ public interface SearchService {
 	public static String[] DefaultSimilaritySearchFields = new String[] {
 		"tag",
 		"body",
+		"domain",
 		"company",
 		"country",
 		"fieldterminology",

@@ -67,10 +67,12 @@ public class LuceneIndexService implements IndexService {
 		writer.addDocument(doc);
 	}
 
-	public void indexPage(Page page, Iterable<NamedEntity> entities) throws IOException {
+	public void indexPage(Page page, Iterable<NamedEntity> entities, Set<String> domains)
+			throws IOException {
 		Document doc = new Document();
 		decorate(doc, page);
 		decorate(doc, entities);
+		decorate(doc, domains);
 		writer.addDocument(doc);
 	}
 
@@ -94,6 +96,13 @@ public class LuceneIndexService implements IndexService {
 			String val = doc.get(e.getKey());
 			if (val == null)
 				doc.add(new StringField(e.getKey(), e.getValue(), Field.Store.YES));
+		}
+		return doc;
+	}
+
+	private Document decorate(Document doc, Set<String> domains) {
+		for (String domain : domains) {
+			doc.add(new StringField("domain", domain, Field.Store.YES));
 		}
 		return doc;
 	}
