@@ -47,7 +47,7 @@ public class MarkdownTemplateEngineTestCase {
 
 	@Test
 	public void tweetPlugin() throws IOException {
-		String t = "%%% tweet user=samtingleff id=1934134452454\n1934134452454\n%%%";
+		String t = "%%% tweet user=samtingleff\n1934134452454\n%%%";
 		TemplateInstance ti = te.parse(t);
 		Assert.assertNotNull(ti);
 		String result = ti.render();

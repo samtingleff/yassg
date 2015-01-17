@@ -22,14 +22,15 @@ public class TweetPlugin extends Plugin {
 	public void emit(StringBuilder sb, List<String> lines,
 			Map<String, String> params) {
 		String user = params.get("user");
-		String id = params.get("id");
 		String width = params.get("width");
 		if (width == null)
 			width = "550";
 		String height = params.get("height");
 		if (height == null)
 			height = "250";
+		for (String line : lines) {
 		try {
+			String id = line;
 			String dest = URLEncoder.encode(String.format("https://twitter.com/%1$s/status/%2$s",
 					user, id), "UTF-8");
 			sb.append(String
@@ -37,6 +38,7 @@ public class TweetPlugin extends Plugin {
 							Integer.parseInt(height), Integer.parseInt(width), dest));
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("Damn you java");
+		}
 		}
 	}
 }
