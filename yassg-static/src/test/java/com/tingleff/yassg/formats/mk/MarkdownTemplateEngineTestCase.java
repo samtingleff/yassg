@@ -44,4 +44,14 @@ public class MarkdownTemplateEngineTestCase {
 		Assert.assertNotNull(result);
 		Assert.assertEquals("<iframe width=\"100%\" height=\"150\" scrolling=\"no\" frameborder=\"no\" src=\"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1934134452454&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false\"></iframe>", result);
 	}
+
+	@Test
+	public void tweetPlugin() throws IOException {
+		String t = "%%% tweet user=samtingleff id=1934134452454\n1934134452454\n%%%";
+		TemplateInstance ti = te.parse(t);
+		Assert.assertNotNull(ti);
+		String result = ti.render();
+		Assert.assertNotNull(result);
+		Assert.assertEquals("<iframe border=\"0\" frameborder=\"0\" height=\"250\" width=\"550\" src=\"http://twitframe.com/show?url=https%3A%2F%2Ftwitter.com%2Fsamtingleff%2Fstatus%2F1934134452454\"></iframe>", result);
+	}
 }
