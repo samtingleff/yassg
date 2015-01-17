@@ -37,6 +37,14 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 %%%
 ```
 
+## Twitter ##
+
+```
+%%% tweet user=jack height=250 width=550
+20
+%%%
+```
+
 # Usage #
 
 See [my own blog](http:///sam.tingleff.com/) for an example project.
