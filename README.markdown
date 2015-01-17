@@ -14,8 +14,7 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 
 # Interesting Features #
 
-* Calls into [AlchemyAPI](http://www.alchemyapi.com/) to retrieve named entities on linked content
-* Builds a lucene index based on post content as well as entities from the linked content
+* Builds a lucene index based on post content, linked domains and named entities from linked content (via [AlchemyAPI](http://www.alchemyapi.com/)
 * "Related content" widget built at build-time
 * (Optional) thrift service to search the lucene index
 
@@ -48,7 +47,3 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 # Usage #
 
 See [my own blog](http:///sam.tingleff.com/) for an example project.
-
-# Future #
-
-- Do something with tags
