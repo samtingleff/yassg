@@ -8,8 +8,8 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 
 # Using It #
 
-* Build it: mvn clean compile assembly:single
-* Run it:   java -jar yassg-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -index index/ -output output/
+* Build it: cd yassg-search ; mvn install ; cd ../yassg-static ; mvn clean compile test assembly:single
+* Run it:   java -jar target/yassg-static-1.0.0-jar-with-dependencies.jar -content content/ -templates templates/ -index index/ -output output/
 * Push it:  rsync -av --delete output/ user@some.web.host:~/public_html/blog/
 
 # Interesting Features #
