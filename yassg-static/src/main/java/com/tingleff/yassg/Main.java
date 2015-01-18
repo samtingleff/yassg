@@ -233,9 +233,6 @@ public class Main {
 					try {
 						URI uri = new URI(href);
 						String domain = uri.getHost();
-						// strip out "www."
-						if (domain.startsWith("www."))
-							domain = domain.substring(4, domain.length());
 						domains.add(domain);
 					} catch(Exception e) { }
 				}
