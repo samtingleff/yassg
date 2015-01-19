@@ -42,6 +42,7 @@ public class SearchServiceHandler implements TSearchService.Iface {
 		}
 	}
 
+	@Override
 	public void reopen() throws TSearchException {
 		try {
 			backend.reopen();

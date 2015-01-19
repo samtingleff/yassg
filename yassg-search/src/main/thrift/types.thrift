@@ -44,11 +44,30 @@ struct TSearchResult {
  1: list<TSearchDoc> hits
 }
 
+struct TDevice {
+ 1: optional string ip,
+ 2: optional string ua
+}
+
 exception TSearchException {
+}
+
+exception TSessionException {
+}
+
+exception TLikeException {
 }
 
 service TSearchService {
  TSearchResult search(1: string query, 2: i32 n, 3: TSort sorting) throws (1: TSearchException error),
  TSearchResult similar(1: string query, 2: i32 n, 3: TSort sorting) throws (1: TSearchException error),
  void reopen() throws (1: TSearchException error)
+}
+
+service TSessionService {
+ i64 createSession(1: TDevice device) throws (1: TSessionException error)
+}
+
+service TLikeService {
+ void like(1: TDevice device, 2: i64 page) throws (1: TLikeException error)
 }
