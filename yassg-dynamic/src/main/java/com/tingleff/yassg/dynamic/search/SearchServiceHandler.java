@@ -1,4 +1,4 @@
-package com.tingleff.yassg.dynamic;
+package com.tingleff.yassg.dynamic.search;
 
 import java.io.IOException;
 

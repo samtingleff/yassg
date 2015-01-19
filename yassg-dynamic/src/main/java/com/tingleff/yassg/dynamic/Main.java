@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.tingleff.yassg.dynamic.search.SearchServiceHandler;
+import com.tingleff.yassg.dynamic.search.ThriftSearchDaemon;
 import com.tingleff.yassg.search.LuceneSearchService;
 import com.tingleff.yassg.search.SearchService;
 
