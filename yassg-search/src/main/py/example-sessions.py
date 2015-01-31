@@ -18,7 +18,7 @@ transport = TTransport.TBufferedTransport(transport)
 protocol = TCompactProtocol.TCompactProtocol(transport)
 client = TSessionService.Client(protocol)
 transport.open()
-result = client.createSession(ttypes.TDevice(args.ip, args.ua))
+result = client.create(ttypes.TDevice(args.ip, args.ua, None))
 transport.close()
 
 print result
