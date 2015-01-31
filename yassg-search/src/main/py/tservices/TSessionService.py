@@ -18,7 +18,14 @@ except:
 
 
 class Iface:
-  def createSession(self, device):
+  def create(self, device):
+    """
+    Parameters:
+     - device
+    """
+    pass
+
+  def validate(self, device):
     """
     Parameters:
      - device
@@ -33,44 +40,77 @@ class Client(Iface):
       self._oprot = oprot
     self._seqid = 0
 
-  def createSession(self, device):
+  def create(self, device):
     """
     Parameters:
      - device
     """
-    self.send_createSession(device)
-    return self.recv_createSession()
+    self.send_create(device)
+    return self.recv_create()
 
-  def send_createSession(self, device):
-    self._oprot.writeMessageBegin('createSession', TMessageType.CALL, self._seqid)
-    args = createSession_args()
+  def send_create(self, device):
+    self._oprot.writeMessageBegin('create', TMessageType.CALL, self._seqid)
+    args = create_args()
     args.device = device
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_createSession(self):
+  def recv_create(self):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = createSession_result()
+    result = create_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
     if result.error is not None:
       raise result.error
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "createSession failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "create failed: unknown result");
+
+  def validate(self, device):
+    """
+    Parameters:
+     - device
+    """
+    self.send_validate(device)
+    return self.recv_validate()
+
+  def send_validate(self, device):
+    self._oprot.writeMessageBegin('validate', TMessageType.CALL, self._seqid)
+    args = validate_args()
+    args.device = device
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_validate(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = validate_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.error is not None:
+      raise result.error
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "validate failed: unknown result");
 
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
     self._handler = handler
     self._processMap = {}
-    self._processMap["createSession"] = Processor.process_createSession
+    self._processMap["create"] = Processor.process_create
+    self._processMap["validate"] = Processor.process_validate
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -87,16 +127,30 @@ class Processor(Iface, TProcessor):
       self._processMap[name](self, seqid, iprot, oprot)
     return True
 
-  def process_createSession(self, seqid, iprot, oprot):
-    args = createSession_args()
+  def process_create(self, seqid, iprot, oprot):
+    args = create_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = createSession_result()
+    result = create_result()
     try:
-      result.success = self._handler.createSession(args.device)
+      result.success = self._handler.create(args.device)
     except TSessionException, error:
       result.error = error
-    oprot.writeMessageBegin("createSession", TMessageType.REPLY, seqid)
+    oprot.writeMessageBegin("create", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_validate(self, seqid, iprot, oprot):
+    args = validate_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = validate_result()
+    try:
+      result.success = self._handler.validate(args.device)
+    except TSessionException, error:
+      result.error = error
+    oprot.writeMessageBegin("validate", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -104,7 +158,7 @@ class Processor(Iface, TProcessor):
 
 # HELPER FUNCTIONS AND STRUCTURES
 
-class createSession_args:
+class create_args:
   """
   Attributes:
    - device
@@ -142,7 +196,7 @@ class createSession_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('createSession_args')
+    oprot.writeStructBegin('create_args')
     if self.device is not None:
       oprot.writeFieldBegin('device', TType.STRUCT, 1)
       self.device.write(oprot)
@@ -165,7 +219,7 @@ class createSession_args:
   def __ne__(self, other):
     return not (self == other)
 
-class createSession_result:
+class create_result:
   """
   Attributes:
    - success
@@ -173,7 +227,7 @@ class createSession_result:
   """
 
   thrift_spec = (
-    (0, TType.I64, 'success', None, None, ), # 0
+    (0, TType.STRING, 'success', None, None, ), # 0
     (1, TType.STRUCT, 'error', (TSessionException, TSessionException.thrift_spec), None, ), # 1
   )
 
@@ -191,8 +245,8 @@ class createSession_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.I64:
-          self.success = iprot.readI64();
+        if ftype == TType.STRING:
+          self.success = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -210,10 +264,143 @@ class createSession_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('createSession_result')
+    oprot.writeStructBegin('create_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.I64, 0)
-      oprot.writeI64(self.success)
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
+      oprot.writeFieldEnd()
+    if self.error is not None:
+      oprot.writeFieldBegin('error', TType.STRUCT, 1)
+      self.error.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class validate_args:
+  """
+  Attributes:
+   - device
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'device', (TDevice, TDevice.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, device=None,):
+    self.device = device
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.device = TDevice()
+          self.device.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('validate_args')
+    if self.device is not None:
+      oprot.writeFieldBegin('device', TType.STRUCT, 1)
+      self.device.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class validate_result:
+  """
+  Attributes:
+   - success
+   - error
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'error', (TSessionException, TSessionException.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, error=None,):
+    self.success = success
+    self.error = error
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.error = TSessionException()
+          self.error.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('validate_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
       oprot.writeFieldEnd()
     if self.error is not None:
       oprot.writeFieldBegin('error', TType.STRUCT, 1)

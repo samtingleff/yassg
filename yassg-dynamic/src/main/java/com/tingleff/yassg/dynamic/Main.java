@@ -19,6 +19,9 @@ public class Main {
 		m.run();
 	}
 
+	@Parameter(names = "-secret", description = "Secret (used for id generation)", required = true)
+	private String secret;
+
 	@Parameter(names = "-dir", description = "Index directory", required = true)
 	private String directory;
 
@@ -58,7 +61,7 @@ public class Main {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				try {
-					SessionServiceHandler proxy = new SessionServiceHandler();
+					SessionServiceHandler proxy = new SessionServiceHandler(secret);
 					ThriftSessionDaemon daemon = new ThriftSessionDaemon(proxy, sessionPort);
 					daemon.run();
 				} catch (Exception e) {

@@ -46,7 +46,8 @@ struct TSearchResult {
 
 struct TDevice {
  1: optional string ip,
- 2: optional string ua
+ 2: optional string ua,
+ 3: optional string id
 }
 
 exception TSearchException {
@@ -65,7 +66,8 @@ service TSearchService {
 }
 
 service TSessionService {
- i64 createSession(1: TDevice device) throws (1: TSessionException error)
+ string create(1: TDevice device) throws (1: TSessionException error),
+ bool validate(1: TDevice device) throws (1: TSessionException error)
 }
 
 service TLikeService {
