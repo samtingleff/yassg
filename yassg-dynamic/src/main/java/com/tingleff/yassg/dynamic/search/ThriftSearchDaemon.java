@@ -1,5 +1,8 @@
 package com.tingleff.yassg.dynamic.search;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
@@ -31,7 +34,7 @@ public class ThriftSearchDaemon {
 
 	public void run() throws Exception {
 		processor = new TSearchService.Processor<TSearchService.Iface>(searcher);
-		serverTransport = new TServerSocket(port);
+		serverTransport = new TServerSocket(new InetSocketAddress(InetAddress.getLocalHost(), port));
 		server = new TThreadPoolServer(
 				new TThreadPoolServer.Args(serverTransport)
 					.protocolFactory(new TCompactProtocol.Factory())
