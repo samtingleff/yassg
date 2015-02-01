@@ -4,12 +4,15 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.tingleff.yassg.dynamic.likes.LikeServiceHandler;
+import com.tingleff.yassg.dynamic.likes.ThriftLikeDaemon;
 import com.tingleff.yassg.dynamic.search.SearchServiceHandler;
 import com.tingleff.yassg.dynamic.search.ThriftSearchDaemon;
 import com.tingleff.yassg.dynamic.sessions.SessionServiceHandler;
 import com.tingleff.yassg.dynamic.sessions.ThriftSessionDaemon;
 import com.tingleff.yassg.search.LuceneSearchService;
 import com.tingleff.yassg.search.SearchService;
+import com.tingleff.yassg.search.types.TDevice;
 
 public class Main {
 
@@ -34,9 +37,14 @@ public class Main {
 	@Parameter(names = "-sessionPort", description = "Session service daemon port (default 9998)", required = false)
 	private int sessionPort = 9998;
 
+	@Parameter(names = "-likesPort", description = "Likes service daemon port (default 9997)", required = false)
+	private int likesPort = 9997;
+
 	public void run() throws Exception {
+		final SessionServiceHandler sessions = new SessionServiceHandler(secret);
 		Thread t1 = runSearchDaemon();
-		Thread t2 = runSessionDaemon();
+		Thread t2 = runSessionDaemon(sessions);
+		Thread t3 = runLikeDaemon(sessions);
 	}
 
 	private Thread runSearchDaemon() throws Exception {
@@ -57,12 +65,28 @@ public class Main {
 		return t;
 	}
 
-	private Thread runSessionDaemon() throws Exception {
+	private Thread runSessionDaemon(final SessionServiceHandler sessions) throws Exception {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				try {
-					SessionServiceHandler proxy = new SessionServiceHandler(secret);
-					ThriftSessionDaemon daemon = new ThriftSessionDaemon(proxy, sessionPort);
+					ThriftSessionDaemon daemon = new ThriftSessionDaemon(sessions, sessionPort);
+					daemon.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		t.setDaemon(false);
+		t.start();
+		return t;
+	}
+
+	private Thread runLikeDaemon(final SessionServiceHandler sessions) throws Exception {
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				try {
+					LikeServiceHandler proxy = new LikeServiceHandler(sessions);
+					ThriftLikeDaemon daemon = new ThriftLikeDaemon(proxy, likesPort);
 					daemon.run();
 				} catch (Exception e) {
 					e.printStackTrace();
