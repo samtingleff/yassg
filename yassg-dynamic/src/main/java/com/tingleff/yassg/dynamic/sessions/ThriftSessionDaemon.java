@@ -1,6 +1,5 @@
 package com.tingleff.yassg.dynamic.sessions;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import org.apache.thrift.protocol.TCompactProtocol;
@@ -34,7 +33,7 @@ public class ThriftSessionDaemon {
 
 	public void run() throws Exception {
 		processor = new TSessionService.Processor<TSessionService.Iface>(sessions);
-		serverTransport = new TServerSocket(new InetSocketAddress(InetAddress.getLocalHost(), port));
+		serverTransport = new TServerSocket(new InetSocketAddress("127.0.0.1", port));
 		server = new TThreadPoolServer(
 				new TThreadPoolServer.Args(serverTransport)
 					.protocolFactory(new TCompactProtocol.Factory())
