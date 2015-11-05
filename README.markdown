@@ -44,6 +44,14 @@ It uses [markdown](http://daringfireball.net/projects/markdown/) for post pages 
 %%%
 ```
 
+## Instagram ##
+
+```
+%%% ig width=320 height=440
+qbq6fIJMVZ
+%%%
+```
+
 # Usage #
 
 See [my own blog](http:///sam.tingleff.com/) for an example project.
