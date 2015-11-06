@@ -1,5 +1,6 @@
 package com.tingleff.yassg.dynamic.sessions;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -42,7 +43,7 @@ public class SessionServiceHandler implements TSessionService.Iface {
 			return false;
 		try {
 			String[] split = id.split(":");
-			long idl = Long.parseLong(split[1], 16);
+			long idl = new BigInteger(split[1], 16).longValue();
 			String expected = sign(idl);
 			if (!expected.equals(split[2]))
 				return false;
