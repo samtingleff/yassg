@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.tingleff.yassg.dynamic.likes.LikeJDBCStorageBackend;
 import com.tingleff.yassg.dynamic.likes.LikeServiceHandler;
 import com.tingleff.yassg.dynamic.likes.ThriftLikeDaemon;
 import com.tingleff.yassg.dynamic.search.SearchServiceHandler;
@@ -29,6 +30,18 @@ public class Main {
 
 	@Parameter(names = "-field", description = "Index search fields", required = false)
 	private List<String> fields;
+
+	@Parameter(names = "-driverClass", description = "JDBC driver class", required = true)
+	private String driverClass;
+
+	@Parameter(names = "-url", description = "JDBC url", required = true)
+	private String url;
+
+	@Parameter(names = "-username", description = "JDBC username", required = true)
+	private String username;
+
+	@Parameter(names = "-password", description = "JDBC password", required = true)
+	private String password;
 
 	@Parameter(names = "-searchPort", description = "Search service daemon port (default 9999)", required = false)
 	private int searchPort = 9999;
@@ -84,7 +97,13 @@ public class Main {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				try {
-					LikeServiceHandler proxy = new LikeServiceHandler(sessions);
+					LikeJDBCStorageBackend likesBackend = new LikeJDBCStorageBackend();
+					likesBackend.setDriverClass(driverClass);
+					likesBackend.setUrl(url);
+					likesBackend.setUsername(username);
+					likesBackend.setPassword(password);
+					likesBackend.init();
+					LikeServiceHandler proxy = new LikeServiceHandler(sessions, likesBackend);
 					ThriftLikeDaemon daemon = new ThriftLikeDaemon(proxy, likesPort);
 					daemon.run();
 				} catch (Exception e) {
