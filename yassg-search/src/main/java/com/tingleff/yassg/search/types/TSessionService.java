@@ -37,9 +37,9 @@ public class TSessionService {
 
   public interface Iface {
 
-    public String create(TDevice device) throws TSessionException, org.apache.thrift.TException;
+    public TDeviceId create(TDevice device) throws TSessionException, org.apache.thrift.TException;
 
-    public boolean validate(TDevice device) throws TSessionException, org.apache.thrift.TException;
+    public TDeviceId validate(TDevice device) throws TSessionException, org.apache.thrift.TException;
 
   }
 
@@ -71,7 +71,7 @@ public class TSessionService {
       super(iprot, oprot);
     }
 
-    public String create(TDevice device) throws TSessionException, org.apache.thrift.TException
+    public TDeviceId create(TDevice device) throws TSessionException, org.apache.thrift.TException
     {
       send_create(device);
       return recv_create();
@@ -84,7 +84,7 @@ public class TSessionService {
       sendBase("create", args);
     }
 
-    public String recv_create() throws TSessionException, org.apache.thrift.TException
+    public TDeviceId recv_create() throws TSessionException, org.apache.thrift.TException
     {
       create_result result = new create_result();
       receiveBase(result, "create");
@@ -97,7 +97,7 @@ public class TSessionService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "create failed: unknown result");
     }
 
-    public boolean validate(TDevice device) throws TSessionException, org.apache.thrift.TException
+    public TDeviceId validate(TDevice device) throws TSessionException, org.apache.thrift.TException
     {
       send_validate(device);
       return recv_validate();
@@ -110,7 +110,7 @@ public class TSessionService {
       sendBase("validate", args);
     }
 
-    public boolean recv_validate() throws TSessionException, org.apache.thrift.TException
+    public TDeviceId recv_validate() throws TSessionException, org.apache.thrift.TException
     {
       validate_result result = new validate_result();
       receiveBase(result, "validate");
@@ -163,7 +163,7 @@ public class TSessionService {
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws TSessionException, org.apache.thrift.TException {
+      public TDeviceId getResult() throws TSessionException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -195,7 +195,7 @@ public class TSessionService {
         prot.writeMessageEnd();
       }
 
-      public boolean getResult() throws TSessionException, org.apache.thrift.TException {
+      public TDeviceId getResult() throws TSessionException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -264,7 +264,6 @@ public class TSessionService {
         validate_result result = new validate_result();
         try {
           result.success = iface.validate(args.device);
-          result.setSuccessIsSet(true);
         } catch (TSessionException error) {
           result.error = error;
         }
@@ -290,7 +289,7 @@ public class TSessionService {
       return processMap;
     }
 
-    public static class create<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, create_args, String> {
+    public static class create<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, create_args, TDeviceId> {
       public create() {
         super("create");
       }
@@ -299,10 +298,10 @@ public class TSessionService {
         return new create_args();
       }
 
-      public AsyncMethodCallback<String> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+      public AsyncMethodCallback<TDeviceId> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new AsyncMethodCallback<String>() { 
-          public void onComplete(String o) {
+        return new AsyncMethodCallback<TDeviceId>() { 
+          public void onComplete(TDeviceId o) {
             create_result result = new create_result();
             result.success = o;
             try {
@@ -342,12 +341,12 @@ public class TSessionService {
         return false;
       }
 
-      public void start(I iface, create_args args, org.apache.thrift.async.AsyncMethodCallback<String> resultHandler) throws TException {
+      public void start(I iface, create_args args, org.apache.thrift.async.AsyncMethodCallback<TDeviceId> resultHandler) throws TException {
         iface.create(args.device,resultHandler);
       }
     }
 
-    public static class validate<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, validate_args, Boolean> {
+    public static class validate<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, validate_args, TDeviceId> {
       public validate() {
         super("validate");
       }
@@ -356,13 +355,12 @@ public class TSessionService {
         return new validate_args();
       }
 
-      public AsyncMethodCallback<Boolean> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+      public AsyncMethodCallback<TDeviceId> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new AsyncMethodCallback<Boolean>() { 
-          public void onComplete(Boolean o) {
+        return new AsyncMethodCallback<TDeviceId>() { 
+          public void onComplete(TDeviceId o) {
             validate_result result = new validate_result();
             result.success = o;
-            result.setSuccessIsSet(true);
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
               return;
@@ -400,7 +398,7 @@ public class TSessionService {
         return false;
       }
 
-      public void start(I iface, validate_args args, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler) throws TException {
+      public void start(I iface, validate_args args, org.apache.thrift.async.AsyncMethodCallback<TDeviceId> resultHandler) throws TException {
         iface.validate(args.device,resultHandler);
       }
     }
@@ -773,7 +771,7 @@ public class TSessionService {
   public static class create_result implements org.apache.thrift.TBase<create_result, create_result._Fields>, java.io.Serializable, Cloneable, Comparable<create_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("create_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
     private static final org.apache.thrift.protocol.TField ERROR_FIELD_DESC = new org.apache.thrift.protocol.TField("error", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
@@ -782,7 +780,7 @@ public class TSessionService {
       schemes.put(TupleScheme.class, new create_resultTupleSchemeFactory());
     }
 
-    private String success; // required
+    private TDeviceId success; // required
     private TSessionException error; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -851,7 +849,7 @@ public class TSessionService {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TDeviceId.class)));
       tmpMap.put(_Fields.ERROR, new org.apache.thrift.meta_data.FieldMetaData("error", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -862,7 +860,7 @@ public class TSessionService {
     }
 
     public create_result(
-      String success,
+      TDeviceId success,
       TSessionException error)
     {
       this();
@@ -875,7 +873,7 @@ public class TSessionService {
      */
     public create_result(create_result other) {
       if (other.isSetSuccess()) {
-        this.success = other.success;
+        this.success = new TDeviceId(other.success);
       }
       if (other.isSetError()) {
         this.error = new TSessionException(other.error);
@@ -892,11 +890,11 @@ public class TSessionService {
       this.error = null;
     }
 
-    public String getSuccess() {
+    public TDeviceId getSuccess() {
       return this.success;
     }
 
-    public void setSuccess(String success) {
+    public void setSuccess(TDeviceId success) {
       this.success = success;
     }
 
@@ -944,7 +942,7 @@ public class TSessionService {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((String)value);
+          setSuccess((TDeviceId)value);
         }
         break;
 
@@ -1107,6 +1105,9 @@ public class TSessionService {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -1144,8 +1145,9 @@ public class TSessionService {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.success = iprot.readString();
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new TDeviceId();
+                struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1175,7 +1177,7 @@ public class TSessionService {
         oprot.writeStructBegin(STRUCT_DESC);
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          oprot.writeString(struct.success);
+          struct.success.write(oprot);
           oprot.writeFieldEnd();
         }
         if (struct.error != null) {
@@ -1209,7 +1211,7 @@ public class TSessionService {
         }
         oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
-          oprot.writeString(struct.success);
+          struct.success.write(oprot);
         }
         if (struct.isSetError()) {
           struct.error.write(oprot);
@@ -1221,7 +1223,8 @@ public class TSessionService {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
-          struct.success = iprot.readString();
+          struct.success = new TDeviceId();
+          struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }
         if (incoming.get(1)) {
@@ -1600,7 +1603,7 @@ public class TSessionService {
   public static class validate_result implements org.apache.thrift.TBase<validate_result, validate_result._Fields>, java.io.Serializable, Cloneable, Comparable<validate_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("validate_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
     private static final org.apache.thrift.protocol.TField ERROR_FIELD_DESC = new org.apache.thrift.protocol.TField("error", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
@@ -1609,7 +1612,7 @@ public class TSessionService {
       schemes.put(TupleScheme.class, new validate_resultTupleSchemeFactory());
     }
 
-    private boolean success; // required
+    private TDeviceId success; // required
     private TSessionException error; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -1674,13 +1677,11 @@ public class TSessionService {
     }
 
     // isset id assignments
-    private static final int __SUCCESS_ISSET_ID = 0;
-    private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TDeviceId.class)));
       tmpMap.put(_Fields.ERROR, new org.apache.thrift.meta_data.FieldMetaData("error", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -1691,12 +1692,11 @@ public class TSessionService {
     }
 
     public validate_result(
-      boolean success,
+      TDeviceId success,
       TSessionException error)
     {
       this();
       this.success = success;
-      setSuccessIsSet(true);
       this.error = error;
     }
 
@@ -1704,8 +1704,9 @@ public class TSessionService {
      * Performs a deep copy on <i>other</i>.
      */
     public validate_result(validate_result other) {
-      __isset_bitfield = other.__isset_bitfield;
-      this.success = other.success;
+      if (other.isSetSuccess()) {
+        this.success = new TDeviceId(other.success);
+      }
       if (other.isSetError()) {
         this.error = new TSessionException(other.error);
       }
@@ -1717,31 +1718,31 @@ public class TSessionService {
 
     @Override
     public void clear() {
-      setSuccessIsSet(false);
-      this.success = false;
+      this.success = null;
       this.error = null;
     }
 
-    public boolean isSuccess() {
+    public TDeviceId getSuccess() {
       return this.success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(TDeviceId success) {
       this.success = success;
-      setSuccessIsSet(true);
     }
 
     public void unsetSuccess() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __SUCCESS_ISSET_ID);
+      this.success = null;
     }
 
     /** Returns true if field success is set (has been assigned a value) and false otherwise */
     public boolean isSetSuccess() {
-      return EncodingUtils.testBit(__isset_bitfield, __SUCCESS_ISSET_ID);
+      return this.success != null;
     }
 
     public void setSuccessIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
+      if (!value) {
+        this.success = null;
+      }
     }
 
     public TSessionException getError() {
@@ -1773,7 +1774,7 @@ public class TSessionService {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((Boolean)value);
+          setSuccess((TDeviceId)value);
         }
         break;
 
@@ -1791,7 +1792,7 @@ public class TSessionService {
     public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
-        return Boolean.valueOf(isSuccess());
+        return getSuccess();
 
       case ERROR:
         return getError();
@@ -1828,12 +1829,12 @@ public class TSessionService {
       if (that == null)
         return false;
 
-      boolean this_present_success = true;
-      boolean that_present_success = true;
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
         if (!(this_present_success && that_present_success))
           return false;
-        if (this.success != that.success)
+        if (!this.success.equals(that.success))
           return false;
       }
 
@@ -1853,7 +1854,7 @@ public class TSessionService {
     public int hashCode() {
       HashCodeBuilder builder = new HashCodeBuilder();
 
-      boolean present_success = true;
+      boolean present_success = true && (isSetSuccess());
       builder.append(present_success);
       if (present_success)
         builder.append(success);
@@ -1915,7 +1916,11 @@ public class TSessionService {
       boolean first = true;
 
       sb.append("success:");
-      sb.append(this.success);
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
       first = false;
       if (!first) sb.append(", ");
       sb.append("error:");
@@ -1932,6 +1937,9 @@ public class TSessionService {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -1944,8 +1952,6 @@ public class TSessionService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -1971,8 +1977,9 @@ public class TSessionService {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
-                struct.success = iprot.readBool();
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new TDeviceId();
+                struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2000,9 +2007,9 @@ public class TSessionService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.isSetSuccess()) {
+        if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          oprot.writeBool(struct.success);
+          struct.success.write(oprot);
           oprot.writeFieldEnd();
         }
         if (struct.error != null) {
@@ -2036,7 +2043,7 @@ public class TSessionService {
         }
         oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
-          oprot.writeBool(struct.success);
+          struct.success.write(oprot);
         }
         if (struct.isSetError()) {
           struct.error.write(oprot);
@@ -2048,7 +2055,8 @@ public class TSessionService {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
-          struct.success = iprot.readBool();
+          struct.success = new TDeviceId();
+          struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }
         if (incoming.get(1)) {

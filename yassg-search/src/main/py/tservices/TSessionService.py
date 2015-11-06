@@ -227,7 +227,7 @@ class create_result:
   """
 
   thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
+    (0, TType.STRUCT, 'success', (TDeviceId, TDeviceId.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'error', (TSessionException, TSessionException.thrift_spec), None, ), # 1
   )
 
@@ -245,8 +245,9 @@ class create_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.STRING:
-          self.success = iprot.readString();
+        if ftype == TType.STRUCT:
+          self.success = TDeviceId()
+          self.success.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -266,8 +267,8 @@ class create_result:
       return
     oprot.writeStructBegin('create_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
       oprot.writeFieldEnd()
     if self.error is not None:
       oprot.writeFieldBegin('error', TType.STRUCT, 1)
@@ -360,7 +361,7 @@ class validate_result:
   """
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
+    (0, TType.STRUCT, 'success', (TDeviceId, TDeviceId.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'error', (TSessionException, TSessionException.thrift_spec), None, ), # 1
   )
 
@@ -378,8 +379,9 @@ class validate_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.BOOL:
-          self.success = iprot.readBool();
+        if ftype == TType.STRUCT:
+          self.success = TDeviceId()
+          self.success.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -399,8 +401,8 @@ class validate_result:
       return
     oprot.writeStructBegin('validate_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.BOOL, 0)
-      oprot.writeBool(self.success)
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
       oprot.writeFieldEnd()
     if self.error is not None:
       oprot.writeFieldBegin('error', TType.STRUCT, 1)

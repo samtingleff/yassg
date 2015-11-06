@@ -13,12 +13,20 @@ parser.add_argument("ip", help="IP address")
 parser.add_argument("ua", help="User agent")
 args = parser.parse_args()
 
+device = ttypes.TDevice(args.ip, args.ua, None)
+
 transport = TSocket.TSocket(args.host, args.port)
 transport = TTransport.TBufferedTransport(transport)
 protocol = TCompactProtocol.TCompactProtocol(transport)
 client = TSessionService.Client(protocol)
 transport.open()
-result = client.create(ttypes.TDevice(args.ip, args.ua, None))
+
+result = client.create(device)
+print result
+
+device.id = result
+result = client.validate(device)
+print result
+
 transport.close()
 
-print result

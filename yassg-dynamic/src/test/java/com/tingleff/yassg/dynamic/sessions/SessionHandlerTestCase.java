@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import com.tingleff.yassg.search.types.TDevice;
+import com.tingleff.yassg.search.types.TDeviceId;
+import com.tingleff.yassg.search.types.TSessionException;
 
 @RunWith(JUnit4.class)
 public class SessionHandlerTestCase {
@@ -14,36 +16,52 @@ public class SessionHandlerTestCase {
 
 	@Test
 	public void testcreate() throws Exception {
-		String id = sessions.create(new TDevice());
+		TDeviceId id = sessions.create(new TDevice());
 		Assert.assertNotNull(id);
-		Assert.assertTrue(id.length() > 0);
+		Assert.assertTrue(id.getVersion() == 1);
+		Assert.assertTrue(id.getId() != 0l);
+		Assert.assertNotNull(id.getSignature());
+		Assert.assertTrue(id.getSignature().length() == 16);
 	}
 
 	@Test
 	public void testValidateValidSession() throws Exception {
-		String id = sessions.create(new TDevice());
+		TDeviceId id = sessions.create(new TDevice());
 		TDevice td = new TDevice();
 		td.setId(id);
-		Assert.assertTrue(sessions.validate(td));
+		Assert.assertNotNull(sessions.validate(td));
 	}
 
-	@Test
+	@Test(expected=TSessionException.class)
+	public void testInvalidVersion() throws Exception {
+		TDeviceId id = sessions.create(new TDevice());
+		id.setVersion((short) 2);
+		TDevice td = new TDevice();
+		td.setId(id);
+		Assert.assertNotNull(sessions.validate(td));
+	}
+
+	@Test(expected=TSessionException.class)
 	public void testValidateNullSession() throws Exception {
-		Assert.assertFalse(sessions.validate(new TDevice()));
+		sessions.validate(new TDevice());
 	}
 
-	@Test
+	@Test(expected=TSessionException.class)
 	public void testValidateEmptySession() throws Exception {
 		TDevice td = new TDevice();
-		td.setId("");
-		Assert.assertFalse(sessions.validate(td));
+		TDeviceId id = new TDeviceId();
+		td.setId(id);
+		sessions.validate(td);
 	}
 
-	@Test
+	@Test(expected=TSessionException.class)
 	public void testGarbageSession() throws Exception {
-		String id = "foobar";
 		TDevice td = new TDevice();
+		TDeviceId id = new TDeviceId();
+		id.setId(10003913435l);
+		id.setVersion((short) 1);
+		id.setSignature("jfslkdjfsfd");
 		td.setId(id);
-		Assert.assertFalse(sessions.validate(td));
+		sessions.validate(td);
 	}
 }

@@ -1,6 +1,5 @@
 package com.tingleff.yassg.dynamic.sessions;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -9,6 +8,7 @@ import java.util.Random;
 import org.apache.thrift.TException;
 
 import com.tingleff.yassg.search.types.TDevice;
+import com.tingleff.yassg.search.types.TDeviceId;
 import com.tingleff.yassg.search.types.TSessionException;
 import com.tingleff.yassg.search.types.TSessionService;
 
@@ -25,31 +25,34 @@ public class SessionServiceHandler implements TSessionService.Iface {
 	}
 
 	@Override
-	public String create(TDevice device) throws TSessionException,
+	public TDeviceId create(TDevice device) throws TSessionException,
 			TException {
-		if (validate(device))
-			return device.getId();
-		long idl = random.nextLong();
-		String signature = sign(idl);
-		String id = "1.0:" + Long.toHexString(idl) + ":" + signature;
+		TDeviceId id = null;
+		try {
+			id = validate(device);
+		} catch(TSessionException e) {
+			long idl = random.nextLong();
+			id = new TDeviceId();
+			id.setVersion((short) 1);
+			id.setId(idl);
+			id.setSignature(sign(idl));
+		}
 		return id;
 	}
 
 	@Override
-	public boolean validate(TDevice device) throws TSessionException,
+	public TDeviceId validate(TDevice device) throws TSessionException,
 			TException {
-		String id = device.getId();
-		if ((id == null) || (id.length() == 0))
-			return false;
+		TDeviceId id = device.getId();
+		if ((id == null) || (id.getVersion() != 1) || (id.getId() == 0) || (id.getSignature() == null))
+			throw new TSessionException();
 		try {
-			String[] split = id.split(":");
-			long idl = new BigInteger(split[1], 16).longValue();
-			String expected = sign(idl);
-			if (!expected.equals(split[2]))
-				return false;
-			return true;
+			String expected = sign(id.getId());
+			if (!expected.equals(id.getSignature()))
+				throw new TSessionException();
+			return id;
 		} catch (Exception e) {
-			return false;
+			throw new TSessionException();
 		}
 	}
 

@@ -23,8 +23,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print 'Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] function [arg1 [arg2...]]'
   print ''
   print 'Functions:'
-  print '  string create(TDevice device)'
-  print '  bool validate(TDevice device)'
+  print '  TDeviceId create(TDevice device)'
+  print '  TDeviceId validate(TDevice device)'
   print ''
   sys.exit(0)
 

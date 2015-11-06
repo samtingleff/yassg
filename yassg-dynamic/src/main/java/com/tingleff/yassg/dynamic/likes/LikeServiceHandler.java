@@ -4,8 +4,10 @@ import org.apache.thrift.TException;
 
 import com.tingleff.yassg.dynamic.sessions.SessionServiceHandler;
 import com.tingleff.yassg.search.types.TDevice;
+import com.tingleff.yassg.search.types.TDeviceId;
 import com.tingleff.yassg.search.types.TLikeException;
 import com.tingleff.yassg.search.types.TLikeService;
+import com.tingleff.yassg.search.types.TSessionException;
 
 public class LikeServiceHandler implements TLikeService.Iface {
 
@@ -19,9 +21,12 @@ public class LikeServiceHandler implements TLikeService.Iface {
 	public void like(TDevice device, long page) throws TLikeException,
 			TException {
 		// validate the id
-		boolean isValidId = sessions.validate(device);
-		if (!isValidId)
-			return;
+		TDeviceId id = null;
+		try {
+			id = sessions.validate(device);
+		} catch(TSessionException e) {
+			id = sessions.create(device);
+		}
 		
 	}
 

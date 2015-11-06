@@ -38,7 +38,7 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
 
   private static final org.apache.thrift.protocol.TField IP_FIELD_DESC = new org.apache.thrift.protocol.TField("ip", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField UA_FIELD_DESC = new org.apache.thrift.protocol.TField("ua", org.apache.thrift.protocol.TType.STRING, (short)2);
-  private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRUCT, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -48,7 +48,7 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
 
   private String ip; // optional
   private String ua; // optional
-  private String id; // optional
+  private TDeviceId id; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -124,7 +124,7 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
     tmpMap.put(_Fields.UA, new org.apache.thrift.meta_data.FieldMetaData("ua", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TDeviceId.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TDevice.class, metaDataMap);
   }
@@ -143,7 +143,7 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
       this.ua = other.ua;
     }
     if (other.isSetId()) {
-      this.id = other.id;
+      this.id = new TDeviceId(other.id);
     }
   }
 
@@ -204,11 +204,11 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
     }
   }
 
-  public String getId() {
+  public TDeviceId getId() {
     return this.id;
   }
 
-  public void setId(String id) {
+  public void setId(TDeviceId id) {
     this.id = id;
   }
 
@@ -249,7 +249,7 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
       if (value == null) {
         unsetId();
       } else {
-        setId((String)value);
+        setId((TDeviceId)value);
       }
       break;
 
@@ -447,6 +447,9 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
     // check for sub-struct validity
+    if (id != null) {
+      id.validate();
+    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -500,8 +503,9 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
             }
             break;
           case 3: // ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.id = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+              struct.id = new TDeviceId();
+              struct.id.read(iprot);
               struct.setIdIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -537,7 +541,7 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
       if (struct.id != null) {
         if (struct.isSetId()) {
           oprot.writeFieldBegin(ID_FIELD_DESC);
-          oprot.writeString(struct.id);
+          struct.id.write(oprot);
           oprot.writeFieldEnd();
         }
       }
@@ -576,7 +580,7 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
         oprot.writeString(struct.ua);
       }
       if (struct.isSetId()) {
-        oprot.writeString(struct.id);
+        struct.id.write(oprot);
       }
     }
 
@@ -593,7 +597,8 @@ public class TDevice implements org.apache.thrift.TBase<TDevice, TDevice._Fields
         struct.setUaIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.id = iprot.readString();
+        struct.id = new TDeviceId();
+        struct.id.read(iprot);
         struct.setIdIsSet(true);
       }
     }
