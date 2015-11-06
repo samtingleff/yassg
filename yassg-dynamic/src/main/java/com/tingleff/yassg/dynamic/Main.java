@@ -12,7 +12,6 @@ import com.tingleff.yassg.dynamic.sessions.SessionServiceHandler;
 import com.tingleff.yassg.dynamic.sessions.ThriftSessionDaemon;
 import com.tingleff.yassg.search.LuceneSearchService;
 import com.tingleff.yassg.search.SearchService;
-import com.tingleff.yassg.search.types.TDevice;
 
 public class Main {
 
