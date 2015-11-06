@@ -77,6 +77,6 @@ service TSessionService {
 }
 
 service TLikeService {
- void like(1: TDevice device, 2: i64 page) throws (1: TLikeException error),
- i64 count(1: TDevice device, 2: i64 page) throws (1: TLikeException error)
+ void like(1: TDevice device, 2: i64 page) throws (1: TLikeException error, 2: TSessionException sessionError),
+ i32 count(1: TDevice device, 2: i64 page) throws (1: TLikeException error, 2: TSessionException sessionError)
 }

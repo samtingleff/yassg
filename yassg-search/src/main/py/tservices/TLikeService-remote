@@ -24,7 +24,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print ''
   print 'Functions:'
   print '  void like(TDevice device, i64 page)'
-  print '  i64 count(TDevice device, i64 page)'
+  print '  i32 count(TDevice device, i64 page)'
   print ''
   sys.exit(0)
 

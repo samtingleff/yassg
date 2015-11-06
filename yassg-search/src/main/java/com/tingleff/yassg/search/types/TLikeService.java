@@ -37,9 +37,9 @@ public class TLikeService {
 
   public interface Iface {
 
-    public void like(TDevice device, long page) throws TLikeException, org.apache.thrift.TException;
+    public void like(TDevice device, long page) throws TLikeException, TSessionException, org.apache.thrift.TException;
 
-    public long count(TDevice device, long page) throws TLikeException, org.apache.thrift.TException;
+    public int count(TDevice device, long page) throws TLikeException, TSessionException, org.apache.thrift.TException;
 
   }
 
@@ -71,7 +71,7 @@ public class TLikeService {
       super(iprot, oprot);
     }
 
-    public void like(TDevice device, long page) throws TLikeException, org.apache.thrift.TException
+    public void like(TDevice device, long page) throws TLikeException, TSessionException, org.apache.thrift.TException
     {
       send_like(device, page);
       recv_like();
@@ -85,17 +85,20 @@ public class TLikeService {
       sendBase("like", args);
     }
 
-    public void recv_like() throws TLikeException, org.apache.thrift.TException
+    public void recv_like() throws TLikeException, TSessionException, org.apache.thrift.TException
     {
       like_result result = new like_result();
       receiveBase(result, "like");
       if (result.error != null) {
         throw result.error;
       }
+      if (result.sessionError != null) {
+        throw result.sessionError;
+      }
       return;
     }
 
-    public long count(TDevice device, long page) throws TLikeException, org.apache.thrift.TException
+    public int count(TDevice device, long page) throws TLikeException, TSessionException, org.apache.thrift.TException
     {
       send_count(device, page);
       return recv_count();
@@ -109,7 +112,7 @@ public class TLikeService {
       sendBase("count", args);
     }
 
-    public long recv_count() throws TLikeException, org.apache.thrift.TException
+    public int recv_count() throws TLikeException, TSessionException, org.apache.thrift.TException
     {
       count_result result = new count_result();
       receiveBase(result, "count");
@@ -118,6 +121,9 @@ public class TLikeService {
       }
       if (result.error != null) {
         throw result.error;
+      }
+      if (result.sessionError != null) {
+        throw result.sessionError;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "count failed: unknown result");
     }
@@ -165,7 +171,7 @@ public class TLikeService {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws TLikeException, org.apache.thrift.TException {
+      public void getResult() throws TLikeException, TSessionException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -200,7 +206,7 @@ public class TLikeService {
         prot.writeMessageEnd();
       }
 
-      public long getResult() throws TLikeException, org.apache.thrift.TException {
+      public int getResult() throws TLikeException, TSessionException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -247,6 +253,8 @@ public class TLikeService {
           iface.like(args.device, args.page);
         } catch (TLikeException error) {
           result.error = error;
+        } catch (TSessionException sessionError) {
+          result.sessionError = sessionError;
         }
         return result;
       }
@@ -272,6 +280,8 @@ public class TLikeService {
           result.setSuccessIsSet(true);
         } catch (TLikeException error) {
           result.error = error;
+        } catch (TSessionException sessionError) {
+          result.sessionError = sessionError;
         }
         return result;
       }
@@ -326,6 +336,11 @@ public class TLikeService {
                         result.setErrorIsSet(true);
                         msg = result;
             }
+            else             if (e instanceof TSessionException) {
+                        result.sessionError = (TSessionException) e;
+                        result.setSessionErrorIsSet(true);
+                        msg = result;
+            }
              else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
@@ -351,7 +366,7 @@ public class TLikeService {
       }
     }
 
-    public static class count<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, count_args, Long> {
+    public static class count<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, count_args, Integer> {
       public count() {
         super("count");
       }
@@ -360,10 +375,10 @@ public class TLikeService {
         return new count_args();
       }
 
-      public AsyncMethodCallback<Long> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+      public AsyncMethodCallback<Integer> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new AsyncMethodCallback<Long>() { 
-          public void onComplete(Long o) {
+        return new AsyncMethodCallback<Integer>() { 
+          public void onComplete(Integer o) {
             count_result result = new count_result();
             result.success = o;
             result.setSuccessIsSet(true);
@@ -382,6 +397,11 @@ public class TLikeService {
             if (e instanceof TLikeException) {
                         result.error = (TLikeException) e;
                         result.setErrorIsSet(true);
+                        msg = result;
+            }
+            else             if (e instanceof TSessionException) {
+                        result.sessionError = (TSessionException) e;
+                        result.setSessionErrorIsSet(true);
                         msg = result;
             }
              else 
@@ -404,7 +424,7 @@ public class TLikeService {
         return false;
       }
 
-      public void start(I iface, count_args args, org.apache.thrift.async.AsyncMethodCallback<Long> resultHandler) throws TException {
+      public void start(I iface, count_args args, org.apache.thrift.async.AsyncMethodCallback<Integer> resultHandler) throws TException {
         iface.count(args.device, args.page,resultHandler);
       }
     }
@@ -880,6 +900,7 @@ public class TLikeService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("like_result");
 
     private static final org.apache.thrift.protocol.TField ERROR_FIELD_DESC = new org.apache.thrift.protocol.TField("error", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField SESSION_ERROR_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionError", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -888,10 +909,12 @@ public class TLikeService {
     }
 
     private TLikeException error; // required
+    private TSessionException sessionError; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      ERROR((short)1, "error");
+      ERROR((short)1, "error"),
+      SESSION_ERROR((short)2, "sessionError");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -908,6 +931,8 @@ public class TLikeService {
         switch(fieldId) {
           case 1: // ERROR
             return ERROR;
+          case 2: // SESSION_ERROR
+            return SESSION_ERROR;
           default:
             return null;
         }
@@ -953,6 +978,8 @@ public class TLikeService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.ERROR, new org.apache.thrift.meta_data.FieldMetaData("error", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      tmpMap.put(_Fields.SESSION_ERROR, new org.apache.thrift.meta_data.FieldMetaData("sessionError", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(like_result.class, metaDataMap);
     }
@@ -961,10 +988,12 @@ public class TLikeService {
     }
 
     public like_result(
-      TLikeException error)
+      TLikeException error,
+      TSessionException sessionError)
     {
       this();
       this.error = error;
+      this.sessionError = sessionError;
     }
 
     /**
@@ -973,6 +1002,9 @@ public class TLikeService {
     public like_result(like_result other) {
       if (other.isSetError()) {
         this.error = new TLikeException(other.error);
+      }
+      if (other.isSetSessionError()) {
+        this.sessionError = new TSessionException(other.sessionError);
       }
     }
 
@@ -983,6 +1015,7 @@ public class TLikeService {
     @Override
     public void clear() {
       this.error = null;
+      this.sessionError = null;
     }
 
     public TLikeException getError() {
@@ -1008,6 +1041,29 @@ public class TLikeService {
       }
     }
 
+    public TSessionException getSessionError() {
+      return this.sessionError;
+    }
+
+    public void setSessionError(TSessionException sessionError) {
+      this.sessionError = sessionError;
+    }
+
+    public void unsetSessionError() {
+      this.sessionError = null;
+    }
+
+    /** Returns true if field sessionError is set (has been assigned a value) and false otherwise */
+    public boolean isSetSessionError() {
+      return this.sessionError != null;
+    }
+
+    public void setSessionErrorIsSet(boolean value) {
+      if (!value) {
+        this.sessionError = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case ERROR:
@@ -1018,6 +1074,14 @@ public class TLikeService {
         }
         break;
 
+      case SESSION_ERROR:
+        if (value == null) {
+          unsetSessionError();
+        } else {
+          setSessionError((TSessionException)value);
+        }
+        break;
+
       }
     }
 
@@ -1025,6 +1089,9 @@ public class TLikeService {
       switch (field) {
       case ERROR:
         return getError();
+
+      case SESSION_ERROR:
+        return getSessionError();
 
       }
       throw new IllegalStateException();
@@ -1039,6 +1106,8 @@ public class TLikeService {
       switch (field) {
       case ERROR:
         return isSetError();
+      case SESSION_ERROR:
+        return isSetSessionError();
       }
       throw new IllegalStateException();
     }
@@ -1065,6 +1134,15 @@ public class TLikeService {
           return false;
       }
 
+      boolean this_present_sessionError = true && this.isSetSessionError();
+      boolean that_present_sessionError = true && that.isSetSessionError();
+      if (this_present_sessionError || that_present_sessionError) {
+        if (!(this_present_sessionError && that_present_sessionError))
+          return false;
+        if (!this.sessionError.equals(that.sessionError))
+          return false;
+      }
+
       return true;
     }
 
@@ -1076,6 +1154,11 @@ public class TLikeService {
       builder.append(present_error);
       if (present_error)
         builder.append(error);
+
+      boolean present_sessionError = true && (isSetSessionError());
+      builder.append(present_sessionError);
+      if (present_sessionError)
+        builder.append(sessionError);
 
       return builder.toHashCode();
     }
@@ -1094,6 +1177,16 @@ public class TLikeService {
       }
       if (isSetError()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.error, other.error);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetSessionError()).compareTo(other.isSetSessionError());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSessionError()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sessionError, other.sessionError);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1123,6 +1216,14 @@ public class TLikeService {
         sb.append("null");
       } else {
         sb.append(this.error);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("sessionError:");
+      if (this.sessionError == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sessionError);
       }
       first = false;
       sb.append(")");
@@ -1177,6 +1278,15 @@ public class TLikeService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // SESSION_ERROR
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.sessionError = new TSessionException();
+                struct.sessionError.read(iprot);
+                struct.setSessionErrorIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -1193,6 +1303,11 @@ public class TLikeService {
         if (struct.error != null) {
           oprot.writeFieldBegin(ERROR_FIELD_DESC);
           struct.error.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.sessionError != null) {
+          oprot.writeFieldBegin(SESSION_ERROR_FIELD_DESC);
+          struct.sessionError.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -1216,20 +1331,31 @@ public class TLikeService {
         if (struct.isSetError()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSessionError()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetError()) {
           struct.error.write(oprot);
+        }
+        if (struct.isSetSessionError()) {
+          struct.sessionError.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, like_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.error = new TLikeException();
           struct.error.read(iprot);
           struct.setErrorIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.sessionError = new TSessionException();
+          struct.sessionError.read(iprot);
+          struct.setSessionErrorIsSet(true);
         }
       }
     }
@@ -1704,8 +1830,9 @@ public class TLikeService {
   public static class count_result implements org.apache.thrift.TBase<count_result, count_result._Fields>, java.io.Serializable, Cloneable, Comparable<count_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("count_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I64, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I32, (short)0);
     private static final org.apache.thrift.protocol.TField ERROR_FIELD_DESC = new org.apache.thrift.protocol.TField("error", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField SESSION_ERROR_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionError", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -1713,13 +1840,15 @@ public class TLikeService {
       schemes.put(TupleScheme.class, new count_resultTupleSchemeFactory());
     }
 
-    private long success; // required
+    private int success; // required
     private TLikeException error; // required
+    private TSessionException sessionError; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success"),
-      ERROR((short)1, "error");
+      ERROR((short)1, "error"),
+      SESSION_ERROR((short)2, "sessionError");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1738,6 +1867,8 @@ public class TLikeService {
             return SUCCESS;
           case 1: // ERROR
             return ERROR;
+          case 2: // SESSION_ERROR
+            return SESSION_ERROR;
           default:
             return null;
         }
@@ -1784,8 +1915,10 @@ public class TLikeService {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.ERROR, new org.apache.thrift.meta_data.FieldMetaData("error", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      tmpMap.put(_Fields.SESSION_ERROR, new org.apache.thrift.meta_data.FieldMetaData("sessionError", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(count_result.class, metaDataMap);
@@ -1795,13 +1928,15 @@ public class TLikeService {
     }
 
     public count_result(
-      long success,
-      TLikeException error)
+      int success,
+      TLikeException error,
+      TSessionException sessionError)
     {
       this();
       this.success = success;
       setSuccessIsSet(true);
       this.error = error;
+      this.sessionError = sessionError;
     }
 
     /**
@@ -1812,6 +1947,9 @@ public class TLikeService {
       this.success = other.success;
       if (other.isSetError()) {
         this.error = new TLikeException(other.error);
+      }
+      if (other.isSetSessionError()) {
+        this.sessionError = new TSessionException(other.sessionError);
       }
     }
 
@@ -1824,13 +1962,14 @@ public class TLikeService {
       setSuccessIsSet(false);
       this.success = 0;
       this.error = null;
+      this.sessionError = null;
     }
 
-    public long getSuccess() {
+    public int getSuccess() {
       return this.success;
     }
 
-    public void setSuccess(long success) {
+    public void setSuccess(int success) {
       this.success = success;
       setSuccessIsSet(true);
     }
@@ -1871,13 +2010,36 @@ public class TLikeService {
       }
     }
 
+    public TSessionException getSessionError() {
+      return this.sessionError;
+    }
+
+    public void setSessionError(TSessionException sessionError) {
+      this.sessionError = sessionError;
+    }
+
+    public void unsetSessionError() {
+      this.sessionError = null;
+    }
+
+    /** Returns true if field sessionError is set (has been assigned a value) and false otherwise */
+    public boolean isSetSessionError() {
+      return this.sessionError != null;
+    }
+
+    public void setSessionErrorIsSet(boolean value) {
+      if (!value) {
+        this.sessionError = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((Long)value);
+          setSuccess((Integer)value);
         }
         break;
 
@@ -1889,16 +2051,27 @@ public class TLikeService {
         }
         break;
 
+      case SESSION_ERROR:
+        if (value == null) {
+          unsetSessionError();
+        } else {
+          setSessionError((TSessionException)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
-        return Long.valueOf(getSuccess());
+        return Integer.valueOf(getSuccess());
 
       case ERROR:
         return getError();
+
+      case SESSION_ERROR:
+        return getSessionError();
 
       }
       throw new IllegalStateException();
@@ -1915,6 +2088,8 @@ public class TLikeService {
         return isSetSuccess();
       case ERROR:
         return isSetError();
+      case SESSION_ERROR:
+        return isSetSessionError();
       }
       throw new IllegalStateException();
     }
@@ -1950,6 +2125,15 @@ public class TLikeService {
           return false;
       }
 
+      boolean this_present_sessionError = true && this.isSetSessionError();
+      boolean that_present_sessionError = true && that.isSetSessionError();
+      if (this_present_sessionError || that_present_sessionError) {
+        if (!(this_present_sessionError && that_present_sessionError))
+          return false;
+        if (!this.sessionError.equals(that.sessionError))
+          return false;
+      }
+
       return true;
     }
 
@@ -1966,6 +2150,11 @@ public class TLikeService {
       builder.append(present_error);
       if (present_error)
         builder.append(error);
+
+      boolean present_sessionError = true && (isSetSessionError());
+      builder.append(present_sessionError);
+      if (present_sessionError)
+        builder.append(sessionError);
 
       return builder.toHashCode();
     }
@@ -1994,6 +2183,16 @@ public class TLikeService {
       }
       if (isSetError()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.error, other.error);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetSessionError()).compareTo(other.isSetSessionError());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSessionError()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sessionError, other.sessionError);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -2027,6 +2226,14 @@ public class TLikeService {
         sb.append("null");
       } else {
         sb.append(this.error);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("sessionError:");
+      if (this.sessionError == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sessionError);
       }
       first = false;
       sb.append(")");
@@ -2075,8 +2282,8 @@ public class TLikeService {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-                struct.success = iprot.readI64();
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.success = iprot.readI32();
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2087,6 +2294,15 @@ public class TLikeService {
                 struct.error = new TLikeException();
                 struct.error.read(iprot);
                 struct.setErrorIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // SESSION_ERROR
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.sessionError = new TSessionException();
+                struct.sessionError.read(iprot);
+                struct.setSessionErrorIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -2106,12 +2322,17 @@ public class TLikeService {
         oprot.writeStructBegin(STRUCT_DESC);
         if (struct.isSetSuccess()) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          oprot.writeI64(struct.success);
+          oprot.writeI32(struct.success);
           oprot.writeFieldEnd();
         }
         if (struct.error != null) {
           oprot.writeFieldBegin(ERROR_FIELD_DESC);
           struct.error.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.sessionError != null) {
+          oprot.writeFieldBegin(SESSION_ERROR_FIELD_DESC);
+          struct.sessionError.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -2138,27 +2359,38 @@ public class TLikeService {
         if (struct.isSetError()) {
           optionals.set(1);
         }
-        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSessionError()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetSuccess()) {
-          oprot.writeI64(struct.success);
+          oprot.writeI32(struct.success);
         }
         if (struct.isSetError()) {
           struct.error.write(oprot);
+        }
+        if (struct.isSetSessionError()) {
+          struct.sessionError.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, count_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(2);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
-          struct.success = iprot.readI64();
+          struct.success = iprot.readI32();
           struct.setSuccessIsSet(true);
         }
         if (incoming.get(1)) {
           struct.error = new TLikeException();
           struct.error.read(iprot);
           struct.setErrorIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.sessionError = new TSessionException();
+          struct.sessionError.read(iprot);
+          struct.setSessionErrorIsSet(true);
         }
       }
     }

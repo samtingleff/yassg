@@ -72,6 +72,8 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     if result.error is not None:
       raise result.error
+    if result.sessionError is not None:
+      raise result.sessionError
     return
 
   def count(self, device, page):
@@ -106,6 +108,8 @@ class Client(Iface):
       return result.success
     if result.error is not None:
       raise result.error
+    if result.sessionError is not None:
+      raise result.sessionError
     raise TApplicationException(TApplicationException.MISSING_RESULT, "count failed: unknown result");
 
 
@@ -140,6 +144,8 @@ class Processor(Iface, TProcessor):
       self._handler.like(args.device, args.page)
     except TLikeException, error:
       result.error = error
+    except TSessionException, sessionError:
+      result.sessionError = sessionError
     oprot.writeMessageBegin("like", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -154,6 +160,8 @@ class Processor(Iface, TProcessor):
       result.success = self._handler.count(args.device, args.page)
     except TLikeException, error:
       result.error = error
+    except TSessionException, sessionError:
+      result.sessionError = sessionError
     oprot.writeMessageBegin("count", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -239,15 +247,18 @@ class like_result:
   """
   Attributes:
    - error
+   - sessionError
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRUCT, 'error', (TLikeException, TLikeException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'sessionError', (TSessionException, TSessionException.thrift_spec), None, ), # 2
   )
 
-  def __init__(self, error=None,):
+  def __init__(self, error=None, sessionError=None,):
     self.error = error
+    self.sessionError = sessionError
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -264,6 +275,12 @@ class like_result:
           self.error.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.sessionError = TSessionException()
+          self.sessionError.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -277,6 +294,10 @@ class like_result:
     if self.error is not None:
       oprot.writeFieldBegin('error', TType.STRUCT, 1)
       self.error.write(oprot)
+      oprot.writeFieldEnd()
+    if self.sessionError is not None:
+      oprot.writeFieldBegin('sessionError', TType.STRUCT, 2)
+      self.sessionError.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -374,16 +395,19 @@ class count_result:
   Attributes:
    - success
    - error
+   - sessionError
   """
 
   thrift_spec = (
-    (0, TType.I64, 'success', None, None, ), # 0
+    (0, TType.I32, 'success', None, None, ), # 0
     (1, TType.STRUCT, 'error', (TLikeException, TLikeException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'sessionError', (TSessionException, TSessionException.thrift_spec), None, ), # 2
   )
 
-  def __init__(self, success=None, error=None,):
+  def __init__(self, success=None, error=None, sessionError=None,):
     self.success = success
     self.error = error
+    self.sessionError = sessionError
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -395,14 +419,20 @@ class count_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.I64:
-          self.success = iprot.readI64();
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 1:
         if ftype == TType.STRUCT:
           self.error = TLikeException()
           self.error.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.sessionError = TSessionException()
+          self.sessionError.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -416,12 +446,16 @@ class count_result:
       return
     oprot.writeStructBegin('count_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.I64, 0)
-      oprot.writeI64(self.success)
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
       oprot.writeFieldEnd()
     if self.error is not None:
       oprot.writeFieldBegin('error', TType.STRUCT, 1)
       self.error.write(oprot)
+      oprot.writeFieldEnd()
+    if self.sessionError is not None:
+      oprot.writeFieldBegin('sessionError', TType.STRUCT, 2)
+      self.sessionError.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
