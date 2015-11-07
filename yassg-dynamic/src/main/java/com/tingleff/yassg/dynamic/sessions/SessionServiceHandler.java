@@ -31,7 +31,7 @@ public class SessionServiceHandler implements TSessionService.Iface {
 		try {
 			id = validate(device);
 		} catch(TSessionException e) {
-			long idl = random.nextLong();
+			long idl = nextLong(random, Long.MAX_VALUE);
 			id = new TDeviceId();
 			id.setVersion((short) 1);
 			id.setId(idl);
@@ -78,4 +78,15 @@ public class SessionServiceHandler implements TSessionService.Iface {
 	    }
 	    return sb.toString();
 	}
+
+	private long nextLong(Random rng, long max) {
+		// error checking and 2^x checking removed for simplicity.
+		long bits, val;
+		do {
+			bits = (rng.nextLong() << 1) >>> 1;
+			val = bits % max;
+		} while (bits - val + (max - 1) < 0L);
+		return val;
+	}
+
 }
