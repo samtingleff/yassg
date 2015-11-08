@@ -31,7 +31,7 @@ public class LikeJDBCStorageBackend implements LikeStorageBackend {
 			boolean liked = doLiked(conn, device, page);
 			if (liked)
 				return;
-			ps = conn.prepareStatement("insert into LIKES (page_id, device_id, ip) values (?, ?, ?)");
+			ps = conn.prepareStatement("insert into likes (page_id, device_id, ip) values (?, ?, ?)");
 			ps.setLong(1, page);
 			ps.setLong(2, device.getId().getId());
 			ps.setString(3, device.getIp());
@@ -51,7 +51,7 @@ public class LikeJDBCStorageBackend implements LikeStorageBackend {
 		ResultSet rs = null;
 		try {
 			conn = connect();
-			ps = conn.prepareStatement("select count(device_id) from LIKES where page_id = ?");
+			ps = conn.prepareStatement("select count(device_id) from likes where page_id = ?");
 			ps.setLong(1, page);
 			rs = ps.executeQuery();
 			int count = 0;
@@ -85,7 +85,7 @@ public class LikeJDBCStorageBackend implements LikeStorageBackend {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = conn.prepareStatement("select count(device_id) from LIKES where page_id = ? and device_id = ?");
+			ps = conn.prepareStatement("select count(device_id) from likes where page_id = ? and device_id = ?");
 			ps.setLong(1, page);
 			ps.setLong(2, device.getId().getId());
 			rs = ps.executeQuery();
@@ -113,7 +113,7 @@ public class LikeJDBCStorageBackend implements LikeStorageBackend {
 		try {
 			conn = connect();
 			Statement st = conn.createStatement();
-			st.execute("CREATE TABLE IF NOT EXISTS LIKES (page_id BIGINT NOT NULL, device_id BIGINT NOT NULL, ip VARCHAR(15) NOT NULL, PRIMARY KEY(page_id, device_id))");
+			st.execute("CREATE TABLE IF NOT EXISTS likes (page_id BIGINT NOT NULL, device_id BIGINT NOT NULL, ip VARCHAR(15) NOT NULL, PRIMARY KEY(page_id, device_id))");
 			conn.commit();
 			initialized = true;
 		} catch (SQLException e) {
