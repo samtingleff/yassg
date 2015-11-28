@@ -19,16 +19,22 @@ import com.tingleff.yassg.semantic.NamedEntityResponse;
 import com.tingleff.yassg.semantic.SemanticDB;
 import com.tingleff.yassg.semantic.SemanticDBImpl;
 
-public class CrawlEntities {
+public class ClusterReferences {
 
 	public static void main(String[] args) throws Exception {
-		CrawlEntities m = new CrawlEntities();
+		ClusterReferences m = new ClusterReferences();
 		new JCommander(m).parse(args);
 		m.run();
 	}
 
 	@Parameter(names = "-alchemyCache", required = false)
 	private String alchemyCacheDir;
+
+	@Parameter(names = "-clusters", required = false)
+	private int clusters = 10;
+
+	@Parameter(names = "-iterations", required = false)
+	private int iterations = 10000;
 
 	private SemanticDB db;
 
@@ -49,7 +55,7 @@ public class CrawlEntities {
 
 		// cluster them
 		MultiKMeansPlusPlusClusterer<DoublePoint> clusterer =
-				new MultiKMeansPlusPlusClusterer<DoublePoint>(new KMeansPlusPlusClusterer<DoublePoint>(10, 10000), 10);
+				new MultiKMeansPlusPlusClusterer<DoublePoint>(new KMeansPlusPlusClusterer<DoublePoint>(clusters, iterations), 10);
 		List<CentroidCluster<DoublePoint>> clusters = clusterer.cluster(coll);
 		for (CentroidCluster<DoublePoint> c : clusters) {
 			System.out.println(c);
