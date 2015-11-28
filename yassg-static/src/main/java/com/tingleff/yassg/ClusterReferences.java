@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
-import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.ml.clustering.MultiKMeansPlusPlusClusterer;
 
@@ -48,17 +48,17 @@ public class ClusterReferences {
 		Map<String, double[]> vectors = buildVectors(db.iterator(), featureMap);
 
 		// convert to Collection<DoublePoint>
-		Collection<DoublePoint> coll = new ArrayList<DoublePoint>(vectors.size());
+		Collection<NamedDoublePoint> coll = new ArrayList<NamedDoublePoint>(vectors.size());
 		for (Map.Entry<String, double[]> e : vectors.entrySet()) {
-			coll.add(new DoublePoint(e.getValue()));
+			coll.add(new NamedDoublePoint(e.getKey(), e.getValue()));
 		}
 
 		// cluster them
-		MultiKMeansPlusPlusClusterer<DoublePoint> clusterer =
-				new MultiKMeansPlusPlusClusterer<DoublePoint>(new KMeansPlusPlusClusterer<DoublePoint>(clusters, iterations), 10);
-		List<CentroidCluster<DoublePoint>> clusters = clusterer.cluster(coll);
-		for (CentroidCluster<DoublePoint> c : clusters) {
-			System.out.println(c);
+		MultiKMeansPlusPlusClusterer<NamedDoublePoint> clusterer =
+				new MultiKMeansPlusPlusClusterer<NamedDoublePoint>(new KMeansPlusPlusClusterer<NamedDoublePoint>(clusters, iterations), 10);
+		List<CentroidCluster<NamedDoublePoint>> clusters = clusterer.cluster(coll);
+		for (CentroidCluster<NamedDoublePoint> c : clusters) {
+			System.out.println("example: " + c.getPoints().get(0));
 		}
 	}
 
@@ -104,5 +104,27 @@ public class ClusterReferences {
 
 	private String featureKey(NamedEntity ne) {
 		return String.format("%1$s:%2$s", ne.getType(), ne.getText());
+	}
+
+	private static class NamedDoublePoint implements Clusterable {
+
+		private String name;
+
+		private double[] points;
+
+		NamedDoublePoint(String name, double[] points) {
+			this.name = name;
+			this.points = points;
+		}
+
+		@Override
+		public double[] getPoint() {
+			return points;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 }
