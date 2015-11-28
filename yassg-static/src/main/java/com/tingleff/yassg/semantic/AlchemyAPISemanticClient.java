@@ -51,8 +51,8 @@ public class AlchemyAPISemanticClient implements SemanticClient {
 		if (result != null) {
 			if (!result.isSuccess()) {
 				long now = System.currentTimeMillis();
-				if ((now - result.getTimestamp()) < (1000l * 60l * 60l * 24l)) {
-					// do not try again for 24 hours
+				if ((now - result.getTimestamp()) < (1000l * 60l * 60l * 24l * 7l)) {
+					// do not try again for 7 days
 					return result;
 				}
 			} else {
