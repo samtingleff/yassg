@@ -1,8 +1,15 @@
 package com.tingleff.yassg;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.math3.ml.clustering.CentroidCluster;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -32,6 +39,19 @@ public class CrawlEntities {
 
 		// build a map of ids to feature vector
 		Map<String, double[]> vectors = buildVectors(db.iterator(), featureMap);
+
+		// convert to Collection<DoublePoint>
+		Collection<DoublePoint> coll = new ArrayList<DoublePoint>(vectors.size());
+		for (Map.Entry<String, double[]> e : vectors.entrySet()) {
+			coll.add(new DoublePoint(e.getValue()));
+		}
+
+		// cluster them
+		KMeansPlusPlusClusterer<DoublePoint> clusterer = new KMeansPlusPlusClusterer<DoublePoint>(10, 10000);
+		List<CentroidCluster<DoublePoint>> clusters = clusterer.cluster(coll);
+		for (CentroidCluster<DoublePoint> c : clusters) {
+			System.out.println(c);
+		}
 	}
 
 	public Map<String, double[]> buildVectors(Iterator<NamedEntityResponse> iter, Map<String, Integer> featureMap) {
