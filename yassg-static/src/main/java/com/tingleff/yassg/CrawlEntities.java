@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
+import org.apache.commons.math3.ml.clustering.MultiKMeansPlusPlusClusterer;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -47,7 +48,8 @@ public class CrawlEntities {
 		}
 
 		// cluster them
-		KMeansPlusPlusClusterer<DoublePoint> clusterer = new KMeansPlusPlusClusterer<DoublePoint>(10, 10000);
+		MultiKMeansPlusPlusClusterer<DoublePoint> clusterer =
+				new MultiKMeansPlusPlusClusterer<DoublePoint>(new KMeansPlusPlusClusterer<DoublePoint>(10, 10000), 10);
 		List<CentroidCluster<DoublePoint>> clusters = clusterer.cluster(coll);
 		for (CentroidCluster<DoublePoint> c : clusters) {
 			System.out.println(c);
