@@ -58,7 +58,11 @@ public class ClusterReferences {
 				new MultiKMeansPlusPlusClusterer<NamedDoublePoint>(new KMeansPlusPlusClusterer<NamedDoublePoint>(clusters, iterations), 10);
 		List<CentroidCluster<NamedDoublePoint>> clusters = clusterer.cluster(coll);
 		for (CentroidCluster<NamedDoublePoint> c : clusters) {
-			System.out.println("example: " + c.getPoints().get(0));
+			System.out.println("Cluster:");
+			List<NamedDoublePoint> items = c.getPoints();
+			for (NamedDoublePoint ndp : items) {
+				System.out.println("- " + ndp);
+			}
 		}
 	}
 
