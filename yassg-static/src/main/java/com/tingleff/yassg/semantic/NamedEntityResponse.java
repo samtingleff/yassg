@@ -7,7 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class NamedEntityResponse implements Serializable, Iterable<NamedEntity> {
-	private static final long serialVersionUID = 5565668814721056491L;
+	private static final long serialVersionUID = 1829096262250104625L;
+
+	private String url = null;
 
 	private boolean success = true;
 
@@ -15,13 +17,18 @@ public class NamedEntityResponse implements Serializable, Iterable<NamedEntity> 
 
 	private List<NamedEntity> list = new LinkedList<NamedEntity>();
 
-	public NamedEntityResponse(boolean success, long timestamp) {
+	public NamedEntityResponse(String url, boolean success, long timestamp) {
+		this.url = url;
 		this.success = success;
 		this.timestamp = timestamp;
 	}
 
+	public NamedEntityResponse(String url) {
+		this(url, true, System.currentTimeMillis());
+	}
+
 	public NamedEntityResponse() {
-		this(true, System.currentTimeMillis());
+		this(null, true, System.currentTimeMillis());
 	}
 
 	void add(NamedEntity ne) {
@@ -39,6 +46,10 @@ public class NamedEntityResponse implements Serializable, Iterable<NamedEntity> 
 
 	public NamedEntity get(int index) {
 		return list.get(index);
+	}
+
+	public String getUrl() {
+		return url;
 	}
 
 	public boolean isSuccess() {

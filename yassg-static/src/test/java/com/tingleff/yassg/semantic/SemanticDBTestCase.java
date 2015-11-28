@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -18,9 +19,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class AlchemyApiSemanticClientTestCase {
+public class SemanticDBTestCase {
 
 	private SemanticClient client;
+
+	private SemanticDB db;
+
+	@Before
+	public void setUp() {
+		String dir = "src/test/tmp/entities";
+		// instantiate the client
+		AlchemyAPISemanticClient client = new AlchemyAPISemanticClient(
+				"foobar-api-key",
+				dir);
+		client.init();
+		this.client = client;
+
+		this.db = new SemanticDBImpl(dir);
+	}
 
 	@Test
 	public void testSimple() throws IOException {
@@ -42,43 +58,50 @@ public class AlchemyApiSemanticClientTestCase {
 	}
 
 	@Test
+	public void iteration() throws IOException {
+		long now = System.currentTimeMillis();
+		String url1 = "", url2 = "";
+
+		NamedEntityResponse ner1 = new NamedEntityResponse(url1, false, now);
+		ner1.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
+		db.save(url1, ner1);
+
+		NamedEntityResponse ner2 = new NamedEntityResponse(url2, true, 0l);
+		ner2.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
+		db.save(url2, ner2);
+
+		Iterator<NamedEntityResponse> iter = db.iterator();
+		Assert.assertNotNull(iter);
+		while (iter.hasNext()) {
+			NamedEntityResponse ner = iter.next();
+			Assert.assertNotNull(ner);
+			System.out.println(ner);
+		}
+	}
+
+	@Test
 	public void testSerialization() throws IOException, ClassNotFoundException {
 		long now = System.currentTimeMillis();
-		String url = "http://www.alchemyapi.com/api/entity/types";
-		NamedEntityResponse ner = new NamedEntityResponse(url, false, now);
+		String url1 = "http://stackoverflow.com/questions/3154488/best-way-to-iterate-through-a-directory-in-java";
+		String url2 = "https://commons.apache.org/proper/commons-io/description.html";
+
+		NamedEntityResponse ner = new NamedEntityResponse(url1, false, now);
 		ner.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
 		byte[] bytes = serialize(ner);
 
 		NamedEntityResponse result = deserialize(bytes);
+		Assert.assertEquals(url1, result.getUrl());
 		Assert.assertFalse(result.isSuccess());
 		Assert.assertEquals(now, result.getTimestamp());
 
-		ner = new NamedEntityResponse(url, true, 0l);
+		ner = new NamedEntityResponse(url2, true, 0l);
 		ner.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
 		bytes = serialize(ner);
 
 		result = deserialize(bytes);
+		Assert.assertEquals(url2, result.getUrl());
 		Assert.assertTrue(result.isSuccess());
 		Assert.assertEquals(0l, result.getTimestamp());
-	}
-
-	@Before
-	public void setUp() throws IOException {
-		// copy from test resource dir into temp dir to avoid hitting the API
-		File resourcePath = new File("src/test/resources/alchemy/9ce6e821f1fbb27149caa7719db6adadc95f6ee0d7df02895023cc42b89fb310.ser");
-		File cachePath = new File("src/test/tmp/entities/9c/e6/e8/9ce6e821f1fbb27149caa7719db6adadc95f6ee0d7df02895023cc42b89fb310.ser");
-		FileInputStream in = new FileInputStream(resourcePath);
-		FileOutputStream out = new FileOutputStream(cachePath);
-		IOUtils.copy(in, out);
-		out.close();
-		in.close();
-
-		// instantiate the client
-		AlchemyAPISemanticClient client = new AlchemyAPISemanticClient(
-				"foobar-api-key",
-				"src/test/tmp/entities");
-		client.init();
-		this.client = client;
 	}
 
 	private byte[] serialize(NamedEntityResponse ner) throws IOException {
