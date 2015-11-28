@@ -66,7 +66,7 @@ public class AlchemyApiSemanticClientTestCase {
 	public void setUp() throws IOException {
 		// copy from test resource dir into temp dir to avoid hitting the API
 		File resourcePath = new File("src/test/resources/alchemy/9ce6e821f1fbb27149caa7719db6adadc95f6ee0d7df02895023cc42b89fb310.ser");
-		File cachePath = new File("src/test/tmp/entities/9c/e6/e8/9ce6e821f1fbb27149caa7719db6adadc95f6ee0d7df02895023cc42b89fb310.ser");
+		File cachePath = new File("src/test/tmp/entities-1/9c/e6/e8/9ce6e821f1fbb27149caa7719db6adadc95f6ee0d7df02895023cc42b89fb310.ser");
 		FileInputStream in = new FileInputStream(resourcePath);
 		FileOutputStream out = new FileOutputStream(cachePath);
 		IOUtils.copy(in, out);
@@ -76,7 +76,7 @@ public class AlchemyApiSemanticClientTestCase {
 		// instantiate the client
 		AlchemyAPISemanticClient client = new AlchemyAPISemanticClient(
 				"foobar-api-key",
-				"src/test/tmp/entities");
+				"src/test/tmp/entities-1");
 		client.init();
 		this.client = client;
 	}
