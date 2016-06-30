@@ -32,7 +32,7 @@ public class MarkdownTemplateEngineTestCase {
 		Assert.assertNotNull(ti);
 		String result = ti.render();
 		Assert.assertNotNull(result);
-		Assert.assertEquals("<iframe src=\"https://www.flickr.com/photos/samtingleff/1934134452454/player/\" width=\"450\" height=\"375\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>", result);
+		Assert.assertEquals("<iframe src=\"//www.flickr.com/photos/samtingleff/1934134452454/player/\" width=\"450\" height=\"375\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>", result);
 	}
 
 	@Test
@@ -52,6 +52,6 @@ public class MarkdownTemplateEngineTestCase {
 		Assert.assertNotNull(ti);
 		String result = ti.render();
 		Assert.assertNotNull(result);
-		Assert.assertEquals("<iframe border=\"0\" frameborder=\"0\" height=\"250\" width=\"550\" src=\"http://twitframe.com/show?url=https%3A%2F%2Ftwitter.com%2Fsamtingleff%2Fstatus%2F1934134452454\"></iframe>", result);
+		Assert.assertEquals("<iframe border=\"0\" frameborder=\"0\" height=\"250\" width=\"550\" src=\"https://twitframe.com/show?url=https%3A%2F%2Ftwitter.com%2Fsamtingleff%2Fstatus%2F1934134452454\"></iframe>", result);
 	}
 }
