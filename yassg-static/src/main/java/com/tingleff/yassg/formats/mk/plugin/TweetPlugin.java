@@ -34,7 +34,7 @@ public class TweetPlugin extends Plugin {
 			String dest = URLEncoder.encode(String.format("https://twitter.com/%1$s/status/%2$s",
 					user, id), "UTF-8");
 			sb.append(String
-					.format("<iframe border=\"0\" frameborder=\"0\" height=\"%1$d\" width=\"%2$d\" src=\"http://twitframe.com/show?url=%3$s\"></iframe>",
+					.format("<iframe border=\"0\" frameborder=\"0\" height=\"%1$d\" width=\"%2$d\" src=\"https://twitframe.com/show?url=%3$s\"></iframe>",
 							Integer.parseInt(height), Integer.parseInt(width), dest));
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("Damn you java");

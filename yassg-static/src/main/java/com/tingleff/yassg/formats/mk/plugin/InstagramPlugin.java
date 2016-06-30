@@ -28,7 +28,7 @@ public class InstagramPlugin extends Plugin {
 		for (String line : lines) {
 		String id = line;
 		sb.append(String
-				.format("<iframe width=\"%1$d\" height=\"%2$d\" src=\"http://instagram.com/p/%3$s/embed\" frameborder=\"0\"></iframe>",
+				.format("<iframe width=\"%1$d\" height=\"%2$d\" src=\"//instagram.com/p/%3$s/embed\" frameborder=\"0\"></iframe>",
 						Integer.parseInt(width), Integer.parseInt(height), id));
 		}
 	}

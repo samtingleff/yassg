@@ -26,7 +26,7 @@ public class FlickrPlugin extends Plugin {
 
 		for (String line : lines) {
 			sb.append(String.format(
-					"<iframe src=\"https://www.flickr.com/photos/%1$s/%2$s/player/\" width=\"%3$s\" height=\"%4$s\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>",
+					"<iframe src=\"//www.flickr.com/photos/%1$s/%2$s/player/\" width=\"%3$s\" height=\"%4$s\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>",
 					user,
 					line,
 					width,
