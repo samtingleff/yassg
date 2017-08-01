@@ -1,33 +1,38 @@
 package com.tingleff.yassg.semantic;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
-import com.likethecolor.alchemy.api.Client;
-import com.likethecolor.alchemy.api.call.AbstractCall;
-import com.likethecolor.alchemy.api.call.RankedNamedEntitiesCall;
-import com.likethecolor.alchemy.api.call.type.CallTypeUrl;
-import com.likethecolor.alchemy.api.entity.NamedEntityAlchemyEntity;
-import com.likethecolor.alchemy.api.entity.Response;
-import com.likethecolor.alchemy.api.params.NamedEntityParams;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.NaturalLanguageUnderstanding;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalysisResults;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalyzeOptions;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.CategoriesOptions;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.ConceptsOptions;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.EntitiesOptions;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.EntitiesResult;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.Features;
+import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.KeywordsOptions;
 
 public class AlchemyAPISemanticClient implements SemanticClient {
 
-	private String apiKey;
+	private String username;
+
+	private String password;
 
 	private String cacheDir;
 
 	private SemanticDB cache;
 
-	private Client client;
+	private NaturalLanguageUnderstanding service;
 
-	private NamedEntityParams namedEntityParams;
+	private Features features;
 
-	public AlchemyAPISemanticClient(String apiKey, String cacheDir) {
-		this.apiKey = apiKey;
+	public AlchemyAPISemanticClient(String username, String password, String cacheDir) {
+		this.username = username;
+		this.password = password;
 		this.cacheDir = cacheDir;
+		this.features = buildFeatures();
 	}
 
 	public AlchemyAPISemanticClient() {
@@ -35,14 +40,10 @@ public class AlchemyAPISemanticClient implements SemanticClient {
 
 	public AlchemyAPISemanticClient init() {
 		this.cache = new SemanticDBImpl(this.cacheDir);
-		this.client = new Client(this.apiKey);
-		namedEntityParams = new NamedEntityParams();
-	    namedEntityParams.setIsCoreference(true);
-	    namedEntityParams.setIsDisambiguate(true);
-	    namedEntityParams.setIsLinkedData(true);
-	    namedEntityParams.setIsQuotations(true);
-	    namedEntityParams.setIsSentiment(true);
-	    namedEntityParams.setIsShowSourceText(true);
+		this.service = new NaturalLanguageUnderstanding(
+				  NaturalLanguageUnderstanding.VERSION_DATE_2017_02_27,
+				  username,
+				  password);
 	    return this;
 	}
 
@@ -60,33 +61,57 @@ public class AlchemyAPISemanticClient implements SemanticClient {
 			}
 		}
 
-		AbstractCall<NamedEntityAlchemyEntity> rankedNamedEntitiesCall = new RankedNamedEntitiesCall(new CallTypeUrl(url), namedEntityParams);
+		AnalyzeOptions parameters = new AnalyzeOptions.Builder()
+				.url(url)
+				.features(this.features)
+				.build();
 		try {
-			Response<NamedEntityAlchemyEntity> rankedNamedEntitiesResponse = client
-					.call(rankedNamedEntitiesCall);
-			Iterator<NamedEntityAlchemyEntity> iter = rankedNamedEntitiesResponse
-					.iterator();
+			AnalysisResults response = this.service
+				  .analyze(parameters)
+				  .execute();
+
 			result = new NamedEntityResponse(url);
-			while (iter.hasNext()) {
-				NamedEntityAlchemyEntity entity = iter.next();
-				List<String> subtypes = new ArrayList<String>(
-						entity.getSubtypeSize());
-				Iterator<String> subtypeIterator = entity.subtypeIterator();
-				while (subtypeIterator.hasNext()) {
-					String s = subtypeIterator.next();
-					subtypes.add(s);
-				}
-				NamedEntity ne = new NamedEntity(entity.getCount(),
-						entity.getType(), entity.getText(), entity.getScore()
-								.doubleValue(), subtypes);
+
+			List<EntitiesResult> entities = response.getEntities();
+			for (EntitiesResult entity : entities) {
+				NamedEntity ne = new NamedEntity(
+						entity.getCount(),
+						entity.getType(),
+						entity.getText(),
+						entity.getRelevance().doubleValue(),
+						Collections.EMPTY_LIST);
 				result.add(ne);
 			}
 			cache.save(url, result);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			NamedEntityResponse failureResponse = new NamedEntityResponse(
 					url, false, System.currentTimeMillis());
 			cache.save(url, failureResponse);
 		}
 	    return result;
+	}
+
+	private Features buildFeatures() {
+		CategoriesOptions categories = new CategoriesOptions();
+		EntitiesOptions entitiesOptions = new EntitiesOptions.Builder()
+				.emotion(true)
+				.sentiment(true)
+				.limit(16)
+				.build();
+		KeywordsOptions keywordsOptions = new KeywordsOptions.Builder()
+				.emotion(true)
+				.sentiment(true)
+				.limit(16)
+				.build();
+		ConceptsOptions concepts= new ConceptsOptions.Builder()
+				.limit(16)
+				.build();
+		Features features = new Features.Builder()
+				.categories(categories)
+				.concepts(concepts)
+				.entities(entitiesOptions)
+				.keywords(keywordsOptions)
+				.build();
+		return features;
 	}
 }

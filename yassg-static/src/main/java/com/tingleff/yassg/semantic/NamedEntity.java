@@ -20,6 +20,7 @@ public class NamedEntity implements Serializable {
 	private double score;
 
 	// subtype, such as Politician or Athlete (for Person)
+	// deprecated after move to IBM Bluemix
 	private List<String> subtypes;
 
 	NamedEntity(int count,

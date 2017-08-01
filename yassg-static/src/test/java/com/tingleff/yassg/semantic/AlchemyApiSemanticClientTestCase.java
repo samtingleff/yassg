@@ -24,17 +24,16 @@ public class AlchemyApiSemanticClientTestCase {
 
 	@Test
 	public void testSimple() throws IOException {
-		NamedEntityResponse result = client.namedEntities("http://www.head-fi.org/t/701900/schiit-happened-the-story-of-the-worlds-most-improbable-start-up/1185");
+		NamedEntityResponse result = client.namedEntities("http://www.head-fi.org/t/701900/schiit-happened-the-story-of-the-worlds-most-improbable-start-up/1185?thisis=new");
 		Assert.assertTrue(result.isSuccess());
-		Assert.assertEquals(26, result.size());
+		Assert.assertEquals(12, result.size());
 		// check two of them
 		NamedEntity e1 = result.get(0);
 		Assert.assertEquals("Person", e1.getType());
 		Assert.assertEquals("Mike Moffat", e1.getText());
 		Assert.assertEquals(0.74376d, e1.getScore(), 0.0d);
 		Assert.assertEquals(11, e1.getCount());
-
-		NamedEntity e7 = result.get(7);
+		NamedEntity e7 = result.get(6);
 		Assert.assertEquals("Company", e7.getType());
 		Assert.assertEquals("Western Digital", e7.getText());
 		Assert.assertEquals(0.350372, e7.getScore(), 0.0d);
@@ -75,7 +74,8 @@ public class AlchemyApiSemanticClientTestCase {
 
 		// instantiate the client
 		AlchemyAPISemanticClient client = new AlchemyAPISemanticClient(
-				"foobar-api-key",
+				"17aff51a-ab1a-4ad3-9970-d2ef3067ef94",
+				"jD3yjR4oXa8s",
 				"src/test/tmp/entities-1");
 		client.init();
 		this.client = client;

@@ -71,8 +71,11 @@ public class Main {
 	@Parameter(names = "-index", required = true)
 	private String indexDir;
 
-	@Parameter(names = "-alchemyKey", required = false)
-	private String alchemyAPIKey;
+	@Parameter(names = "-alchemyUsername", required = false)
+	private String alchemyUsername;
+
+	@Parameter(names = "-alchemyPassword", required = false)
+	private String alchemyPassword;
 
 	@Parameter(names = "-alchemyCache", required = false)
 	private String alchemyCacheDir;
@@ -103,8 +106,9 @@ public class Main {
 		pageTemplateEngine = new StringTemplate4Engine(templateDir);
 		bodyTemplateEngine = new MarkdownTemplateEngine();
 		writer = new ContentFileWriter(outputDir);
-		if (alchemyAPIKey != null) {
-			semanticClient = new AlchemyAPISemanticClient(alchemyAPIKey, alchemyCacheDir).init();
+		if (alchemyUsername != null) {
+			semanticClient = new AlchemyAPISemanticClient(
+					alchemyUsername, alchemyPassword, alchemyCacheDir).init();
 		}
 		indexService = new LuceneIndexService(indexDir);
 		indexService.open();
@@ -241,7 +245,7 @@ public class Main {
 
 		// send to semantic client
 		List<NamedEntity> entities = new LinkedList<NamedEntity>();
-		if (alchemyAPIKey != null) {
+		if (alchemyUsername != null) {
 			for (String url : urls) {
 				NamedEntityResponse response = null;
 				try {
