@@ -74,8 +74,8 @@ public class AlchemyApiSemanticClientTestCase {
 
 		// instantiate the client
 		AlchemyAPISemanticClient client = new AlchemyAPISemanticClient(
-				"17aff51a-ab1a-4ad3-9970-d2ef3067ef94",
-				"jD3yjR4oXa8s",
+				"revoked",
+				"password",
 				"src/test/tmp/entities-1");
 		client.init();
 		this.client = client;
