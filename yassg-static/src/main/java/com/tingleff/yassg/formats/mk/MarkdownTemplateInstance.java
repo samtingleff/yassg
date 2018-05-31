@@ -27,7 +27,12 @@ public class MarkdownTemplateInstance implements TemplateInstance {
 
 	@Override
 	public String render() throws IOException {
-		return p.process(template);
+		String result = p.process(template);
+		// running into this bug
+		// https://stackoverflow.com/questions/34853383/markdown4j-adding-space-if-script-is-included-in-markdown
+		// and I'm too lazy to change markdown engines
+		result = result.replaceAll("https: //", "https://");
+		return result;
 	}
 
 }
