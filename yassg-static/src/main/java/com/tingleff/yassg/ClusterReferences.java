@@ -70,19 +70,23 @@ public class ClusterReferences {
 		Map<String, double[]> result = new HashMap<String, double[]>();
 		while (iter.hasNext()) {
 			NamedEntityResponse ner = iter.next();
-			double[] features = featureVector(ner, featureMap);
-			result.put(ner.getResult().getUrl(), features);
+			if (ner.isSuccess()) {
+				double[] features = featureVector(ner, featureMap);
+				result.put(ner.getResult().getUrl(), features);
+			}
 		}
 		return result;
 	}
 
 	public double[] featureVector(NamedEntityResponse ner, Map<String, Integer> featureMap) {
 		double[] result = new double[featureMap.size()];
-		Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
-		while (entities.hasNext()) {
-			NamedEntity ne = entities.next();
-			Integer index = featureMap.get(featureKey(ne));
-			result[index.intValue()] = ne.getScore();
+		if (ner.isSuccess()) {
+			Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
+			while (entities.hasNext()) {
+				NamedEntity ne = entities.next();
+				Integer index = featureMap.get(featureKey(ne));
+				result[index.intValue()] = ne.getScore();
+			}
 		}
 		return result;
 	}
@@ -92,14 +96,16 @@ public class ClusterReferences {
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		while (iter.hasNext()) {
 			NamedEntityResponse ner = iter.next();
-			Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
-			while (entities.hasNext()) {
-				NamedEntity ne = entities.next();
-				String key = featureKey(ne);
-				Integer i = m.get(key);
-				if (i == null) {
-					m.put(key, new Integer(id));
-					++id;
+			if (ner.isSuccess()) {
+				Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
+				while (entities.hasNext()) {
+					NamedEntity ne = entities.next();
+					String key = featureKey(ne);
+					Integer i = m.get(key);
+					if (i == null) {
+						m.put(key, new Integer(id));
+						++id;
+					}
 				}
 			}
 		}
