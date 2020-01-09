@@ -27,12 +27,14 @@ public class SemanticDBTestCase {
 		String url1 = "http://www.alchemyapi.com/api/entity/types",
 				url2 = "https://commons.apache.org/proper/commons-io/description.html";
 
-		NamedEntityResponse ner1 = new NamedEntityResponse(url1, false, now);
-		ner1.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
+		NamedEntityResponse ner1 = new NamedEntityResponse(false,
+				new NamedEntityResult("foo", url1, now,
+						Arrays.asList(new NamedEntity(10, "foobar", "FoobarText", 10.032d))));
 		db.save(url1, ner1);
 
-		NamedEntityResponse ner2 = new NamedEntityResponse(url2, true, 0l);
-		ner2.add(new NamedEntity(10, "foobar", "FoobarText", 10.032d, Arrays.asList("subtype1", "subtype2")));
+		NamedEntityResponse ner2 = new NamedEntityResponse(true,
+				new NamedEntityResult("foo", url2, now,
+						Arrays.asList(new NamedEntity(10, "foobar", "FoobarText", 10.032d))));
 		db.save(url2, ner2);
 
 		Iterator<NamedEntityResponse> iter = db.iterator();

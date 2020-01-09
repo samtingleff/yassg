@@ -71,14 +71,14 @@ public class ClusterReferences {
 		while (iter.hasNext()) {
 			NamedEntityResponse ner = iter.next();
 			double[] features = featureVector(ner, featureMap);
-			result.put(ner.getUrl(), features);
+			result.put(ner.getResult().getUrl(), features);
 		}
 		return result;
 	}
 
 	public double[] featureVector(NamedEntityResponse ner, Map<String, Integer> featureMap) {
 		double[] result = new double[featureMap.size()];
-		Iterator<NamedEntity> entities = ner.iterator();
+		Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
 		while (entities.hasNext()) {
 			NamedEntity ne = entities.next();
 			Integer index = featureMap.get(featureKey(ne));
@@ -92,7 +92,7 @@ public class ClusterReferences {
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		while (iter.hasNext()) {
 			NamedEntityResponse ner = iter.next();
-			Iterator<NamedEntity> entities = ner.iterator();
+			Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
 			while (entities.hasNext()) {
 				NamedEntity ne = entities.next();
 				String key = featureKey(ne);

@@ -34,7 +34,7 @@ import com.tingleff.yassg.pagedb.file.FilePageDB;
 import com.tingleff.yassg.search.LuceneSearchService;
 import com.tingleff.yassg.search.SearchService;
 import com.tingleff.yassg.search.types.TSearchResult;
-import com.tingleff.yassg.semantic.AlchemyAPISemanticClient;
+import com.tingleff.yassg.semantic.AlphaSemanticClient;
 import com.tingleff.yassg.semantic.NamedEntity;
 import com.tingleff.yassg.semantic.NamedEntityResponse;
 import com.tingleff.yassg.semantic.SemanticClient;
@@ -71,14 +71,14 @@ public class Main {
 	@Parameter(names = "-index", required = true)
 	private String indexDir;
 
-	@Parameter(names = "-alchemyUsername", required = false)
-	private String alchemyUsername;
+	@Parameter(names = "-semanticUrl", required = false)
+	private String semanticUrl;
 
-	@Parameter(names = "-alchemyPassword", required = false)
-	private String alchemyPassword;
+	@Parameter(names = "-semanticSecret", required = false)
+	private String semanticSecret;
 
-	@Parameter(names = "-alchemyCache", required = false)
-	private String alchemyCacheDir;
+	@Parameter(names = "-semanticCacheDir", required = false)
+	private String semanticCacheDir;
 
 	@Parameter(names = "-verbose")
 	private boolean verbose = false;
@@ -106,9 +106,14 @@ public class Main {
 		pageTemplateEngine = new StringTemplate4Engine(templateDir);
 		bodyTemplateEngine = new MarkdownTemplateEngine();
 		writer = new ContentFileWriter(outputDir);
-		if (alchemyUsername != null) {
-			semanticClient = new AlchemyAPISemanticClient(
-					alchemyUsername, alchemyPassword, alchemyCacheDir).init();
+		if (semanticUrl == null) {
+			// fallback on environment variables
+			semanticUrl = System.getenv("NER_URL");
+			semanticSecret = System.getenv("NER_SECRET");
+		}
+		if (semanticUrl != null) {
+			semanticClient = new AlphaSemanticClient(
+					semanticUrl, semanticSecret, semanticCacheDir).init();
 		}
 		indexService = new LuceneIndexService(indexDir);
 		indexService.open();
@@ -245,17 +250,23 @@ public class Main {
 
 		// send to semantic client
 		List<NamedEntity> entities = new LinkedList<NamedEntity>();
-		if (alchemyUsername != null) {
+		if (semanticUrl != null) {
 			for (String url : urls) {
 				NamedEntityResponse response = null;
 				try {
 					response = semanticClient.namedEntities(url);
-					for (NamedEntity ne : response) {
-						entities.add(ne);
+					if (response.isSuccess()) {
+						for (NamedEntity ne : response.getResult().getEntities()) {
+							entities.add(ne);
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				/*try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}*/
 			}
 		}
 		indexService.indexPage(p, entities, domains);
