@@ -84,8 +84,10 @@ public class ClusterReferences {
 			Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
 			while (entities.hasNext()) {
 				NamedEntity ne = entities.next();
-				Integer index = featureMap.get(featureKey(ne));
-				result[index.intValue()] = ne.getScore();
+				if (ne.getCount() > 1) {
+					Integer index = featureMap.get(featureKey(ne));
+					result[index.intValue()] = ne.getScore();
+				}
 			}
 		}
 		return result;
@@ -100,11 +102,13 @@ public class ClusterReferences {
 				Iterator<NamedEntity> entities = ner.getResult().getEntities().iterator();
 				while (entities.hasNext()) {
 					NamedEntity ne = entities.next();
-					String key = featureKey(ne);
-					Integer i = m.get(key);
-					if (i == null) {
-						m.put(key, new Integer(id));
-						++id;
+					if (ne.getCount() > 1) {
+						String key = featureKey(ne);
+						Integer i = m.get(key);
+						if (i == null) {
+							m.put(key, new Integer(id));
+							++id;
+						}
 					}
 				}
 			}
